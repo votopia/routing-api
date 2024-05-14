@@ -180,7 +180,7 @@
      "S3Bucket": {
       "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
      },
-     "S3Key": "745def6c3e0c143a298a251a29327c43b095d06b3503cf46b4ea9a263b7cbe00.zip"
+     "S3Key": "9235d8fac3af5cf7173bc9614bd94f8bdc55ac48750eb5cb257ec906709df9b0.zip"
     },
     "Description": "Pool Cache Lambda with Protocol V3",
     "Environment": {
@@ -231,7 +231,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "RoutingAPIStack/RoutingCachingStack/PoolCacheLambda-ProtocolV3/Resource",
-    "aws:asset:path": "asset.745def6c3e0c143a298a251a29327c43b095d06b3503cf46b4ea9a263b7cbe00",
+    "aws:asset:path": "asset.9235d8fac3af5cf7173bc9614bd94f8bdc55ac48750eb5cb257ec906709df9b0",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }

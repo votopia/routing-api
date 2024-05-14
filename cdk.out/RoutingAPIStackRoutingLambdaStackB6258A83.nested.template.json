@@ -347,7 +347,7 @@
      "S3Bucket": {
       "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
      },
-     "S3Key": "bb6863b4b707d14185d89da1d79bfa01e683a4201e84b3fe9b330982306af676.zip"
+     "S3Key": "c4c1a9faeaa19e2c03942aed0d405a7a94686c491017c7782341958200fc4c32.zip"
     },
     "DeadLetterConfig": {
      "TargetArn": {
@@ -380,8 +380,7 @@
       "TOKEN_PROPERTIES_CACHING_TABLE_NAME": {
        "Ref": "referencetoRoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputsRoutingAPIStackRoutingDatabaseStackTokenPropertiesCachingDbC771742DRef"
       },
-      "VERSION": "6",
-      "WEB3_RPC_8453": "https://mainnet.base.org"
+      "VERSION": "6"
      }
     },
     "EphemeralStorage": {
@@ -421,7 +420,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "RoutingAPIStack/RoutingLambdaStack/RoutingLambda2/Resource",
-    "aws:asset:path": "asset.bb6863b4b707d14185d89da1d79bfa01e683a4201e84b3fe9b330982306af676",
+    "aws:asset:path": "asset.c4c1a9faeaa19e2c03942aed0d405a7a94686c491017c7782341958200fc4c32",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
@@ -452,7 +451,7 @@
     "aws:cdk:path": "RoutingAPIStack/RoutingLambdaStack/RoutingLambda2/LogRetention/Resource"
    }
   },
-  "RoutingLambda2CurrentVersion49A1BB94191113497c32d336ee7bbe98a4627d8b": {
+  "RoutingLambda2CurrentVersion49A1BB9484c3cd18ecae56fa74e53e24333527b8": {
    "Type": "AWS::Lambda::Version",
    "Properties": {
     "FunctionName": {
@@ -642,7 +641,7 @@
     },
     "FunctionVersion": {
      "Fn::GetAtt": [
-      "RoutingLambda2CurrentVersion49A1BB94191113497c32d336ee7bbe98a4627d8b",
+      "RoutingLambda2CurrentVersion49A1BB9484c3cd18ecae56fa74e53e24333527b8",
       "Version"
      ]
     },
