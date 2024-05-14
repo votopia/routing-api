@@ -1,0 +1,3601 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "RoutingAPIStack": {
+        "id": "RoutingAPIStack",
+        "path": "RoutingAPIStack",
+        "children": {
+          "RoutingCachingStack": {
+            "id": "RoutingCachingStack",
+            "path": "RoutingAPIStack/RoutingCachingStack",
+            "children": {
+              "PoolCacheBucket": {
+                "id": "PoolCacheBucket",
+                "path": "RoutingAPIStack/RoutingCachingStack/PoolCacheBucket",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingCachingStack/PoolCacheBucket/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                      "aws:cdk:cloudformation:props": {}
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.CfnBucket",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3.Bucket",
+                  "version": "2.104.0"
+                }
+              },
+              "PoolCacheBucket2": {
+                "id": "PoolCacheBucket2",
+                "path": "RoutingAPIStack/RoutingCachingStack/PoolCacheBucket2",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingCachingStack/PoolCacheBucket2/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                      "aws:cdk:cloudformation:props": {
+                        "lifecycleConfiguration": {
+                          "rules": [
+                            {
+                              "expirationInDays": 3650,
+                              "status": "Enabled"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.CfnBucket",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3.Bucket",
+                  "version": "2.104.0"
+                }
+              },
+              "RoutingLambdaRole": {
+                "id": "RoutingLambdaRole",
+                "path": "RoutingAPIStack/RoutingCachingStack/RoutingLambdaRole",
+                "children": {
+                  "ImportRoutingLambdaRole": {
+                    "id": "ImportRoutingLambdaRole",
+                    "path": "RoutingAPIStack/RoutingCachingStack/RoutingLambdaRole/ImportRoutingLambdaRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingCachingStack/RoutingLambdaRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                              ]
+                            ]
+                          },
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/CloudWatchFullAccess"
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "RoutingAPIStack/RoutingCachingStack/RoutingLambdaRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "RoutingAPIStack/RoutingCachingStack/RoutingLambdaRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "xray:PutTraceSegments",
+                                    "xray:PutTelemetryRecords"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": "*"
+                                },
+                                {
+                                  "Action": [
+                                    "s3:GetObject*",
+                                    "s3:GetBucket*",
+                                    "s3:List*",
+                                    "s3:DeleteObject*",
+                                    "s3:PutObject",
+                                    "s3:PutObjectLegalHold",
+                                    "s3:PutObjectRetention",
+                                    "s3:PutObjectTagging",
+                                    "s3:PutObjectVersionTagging",
+                                    "s3:Abort*"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "PoolCacheBucket20A883DAA",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          {
+                                            "Fn::GetAtt": [
+                                              "PoolCacheBucket20A883DAA",
+                                              "Arn"
+                                            ]
+                                          },
+                                          "/*"
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": [
+                                    "s3:GetObject*",
+                                    "s3:GetBucket*",
+                                    "s3:List*",
+                                    "s3:DeleteObject*",
+                                    "s3:PutObject",
+                                    "s3:PutObjectLegalHold",
+                                    "s3:PutObjectRetention",
+                                    "s3:PutObjectTagging",
+                                    "s3:PutObjectVersionTagging",
+                                    "s3:Abort*"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "TokenListCacheBucketB0AEA45C",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          {
+                                            "Fn::GetAtt": [
+                                              "TokenListCacheBucketB0AEA45C",
+                                              "Arn"
+                                            ]
+                                          },
+                                          "/*"
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "RoutingLambdaRoleDefaultPolicyB8EDD428",
+                            "roles": [
+                              {
+                                "Ref": "RoutingLambdaRole270B0918"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.104.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.104.0"
+                }
+              },
+              "InsightsLayerPools": {
+                "id": "InsightsLayerPools",
+                "path": "RoutingAPIStack/RoutingCachingStack/InsightsLayerPools",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.104.0"
+                }
+              },
+              "PoolCacheLambda-ProtocolV3": {
+                "id": "PoolCacheLambda-ProtocolV3",
+                "path": "RoutingAPIStack/RoutingCachingStack/PoolCacheLambda-ProtocolV3",
+                "children": {
+                  "Code": {
+                    "id": "Code",
+                    "path": "RoutingAPIStack/RoutingCachingStack/PoolCacheLambda-ProtocolV3/Code",
+                    "children": {
+                      "Stage": {
+                        "id": "Stage",
+                        "path": "RoutingAPIStack/RoutingCachingStack/PoolCacheLambda-ProtocolV3/Code/Stage",
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.AssetStaging",
+                          "version": "2.104.0"
+                        }
+                      },
+                      "AssetBucket": {
+                        "id": "AssetBucket",
+                        "path": "RoutingAPIStack/RoutingCachingStack/PoolCacheLambda-ProtocolV3/Code/AssetBucket",
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                          "version": "2.104.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingCachingStack/PoolCacheLambda-ProtocolV3/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                      "aws:cdk:cloudformation:props": {
+                        "code": {
+                          "s3Bucket": {
+                            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                          },
+                          "s3Key": "745def6c3e0c143a298a251a29327c43b095d06b3503cf46b4ea9a263b7cbe00.zip"
+                        },
+                        "description": "Pool Cache Lambda with Protocol V3",
+                        "environment": {
+                          "variables": {
+                            "POOL_CACHE_BUCKET": {
+                              "Ref": "PoolCacheBucketD80D665F"
+                            },
+                            "POOL_CACHE_BUCKET_2": {
+                              "Ref": "PoolCacheBucket20A883DAA"
+                            },
+                            "POOL_CACHE_KEY": "poolCache.json",
+                            "protocol": "V3",
+                            "timeout": "90000",
+                            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+                          }
+                        },
+                        "handler": "index.handler",
+                        "layers": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:aws:lambda:",
+                                {
+                                  "Ref": "AWS::Region"
+                                },
+                                ":580247275435:layer:LambdaInsightsExtension:14"
+                              ]
+                            ]
+                          }
+                        ],
+                        "memorySize": 1024,
+                        "role": {
+                          "Fn::GetAtt": [
+                            "RoutingLambdaRole270B0918",
+                            "Arn"
+                          ]
+                        },
+                        "runtime": "nodejs14.x",
+                        "timeout": 900,
+                        "tracingConfig": {
+                          "mode": "Active"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda_nodejs.NodejsFunction",
+                  "version": "2.104.0"
+                }
+              },
+              "SchedulePoolCache-ProtocolV3": {
+                "id": "SchedulePoolCache-ProtocolV3",
+                "path": "RoutingAPIStack/RoutingCachingStack/SchedulePoolCache-ProtocolV3",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingCachingStack/SchedulePoolCache-ProtocolV3/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Events::Rule",
+                      "aws:cdk:cloudformation:props": {
+                        "scheduleExpression": "rate(15 minutes)",
+                        "state": "ENABLED",
+                        "targets": [
+                          {
+                            "id": "Target0",
+                            "arn": {
+                              "Fn::GetAtt": [
+                                "PoolCacheLambdaProtocolV31AB5A262",
+                                "Arn"
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_events.CfnRule",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "AllowEventRuleRoutingAPIStackRoutingCachingStackPoolCacheLambdaProtocolV3CB7768ED": {
+                    "id": "AllowEventRuleRoutingAPIStackRoutingCachingStackPoolCacheLambdaProtocolV3CB7768ED",
+                    "path": "RoutingAPIStack/RoutingCachingStack/SchedulePoolCache-ProtocolV3/AllowEventRuleRoutingAPIStackRoutingCachingStackPoolCacheLambdaProtocolV3CB7768ED",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                      "aws:cdk:cloudformation:props": {
+                        "action": "lambda:InvokeFunction",
+                        "functionName": {
+                          "Fn::GetAtt": [
+                            "PoolCacheLambdaProtocolV31AB5A262",
+                            "Arn"
+                          ]
+                        },
+                        "principal": "events.amazonaws.com",
+                        "sourceArn": {
+                          "Fn::GetAtt": [
+                            "SchedulePoolCacheProtocolV3BE1BA928",
+                            "Arn"
+                          ]
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_events.Rule",
+                  "version": "2.104.0"
+                }
+              },
+              "RoutingAPI-SEV4-PoolCacheToS3LambdaErrorRate-ProtocolV3": {
+                "id": "RoutingAPI-SEV4-PoolCacheToS3LambdaErrorRate-ProtocolV3",
+                "path": "RoutingAPIStack/RoutingCachingStack/RoutingAPI-SEV4-PoolCacheToS3LambdaErrorRate-ProtocolV3",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingCachingStack/RoutingAPI-SEV4-PoolCacheToS3LambdaErrorRate-ProtocolV3/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::CloudWatch::Alarm",
+                      "aws:cdk:cloudformation:props": {
+                        "comparisonOperator": "GreaterThanOrEqualToThreshold",
+                        "evaluationPeriods": 12,
+                        "metrics": [
+                          {
+                            "expression": "(invocations - errors) < 1",
+                            "id": "expr_1"
+                          },
+                          {
+                            "metricStat": {
+                              "metric": {
+                                "metricName": "Invocations",
+                                "namespace": "AWS/Lambda",
+                                "dimensions": [
+                                  {
+                                    "name": "FunctionName",
+                                    "value": {
+                                      "Ref": "PoolCacheLambdaProtocolV31AB5A262"
+                                    }
+                                  }
+                                ]
+                              },
+                              "period": 300,
+                              "stat": "Sum"
+                            },
+                            "id": "invocations",
+                            "returnData": false
+                          },
+                          {
+                            "metricStat": {
+                              "metric": {
+                                "metricName": "Errors",
+                                "namespace": "AWS/Lambda",
+                                "dimensions": [
+                                  {
+                                    "name": "FunctionName",
+                                    "value": {
+                                      "Ref": "PoolCacheLambdaProtocolV31AB5A262"
+                                    }
+                                  }
+                                ]
+                              },
+                              "period": 300,
+                              "stat": "Sum"
+                            },
+                            "id": "errors",
+                            "returnData": false
+                          }
+                        ],
+                        "threshold": 50
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_cloudwatch.CfnAlarm",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cloudwatch.Alarm",
+                  "version": "2.104.0"
+                }
+              },
+              "RoutingAPI-PoolCacheToS3LambdaThrottles-ProtocolV3": {
+                "id": "RoutingAPI-PoolCacheToS3LambdaThrottles-ProtocolV3",
+                "path": "RoutingAPIStack/RoutingCachingStack/RoutingAPI-PoolCacheToS3LambdaThrottles-ProtocolV3",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingCachingStack/RoutingAPI-PoolCacheToS3LambdaThrottles-ProtocolV3/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::CloudWatch::Alarm",
+                      "aws:cdk:cloudformation:props": {
+                        "comparisonOperator": "GreaterThanOrEqualToThreshold",
+                        "dimensions": [
+                          {
+                            "name": "FunctionName",
+                            "value": {
+                              "Ref": "PoolCacheLambdaProtocolV31AB5A262"
+                            }
+                          }
+                        ],
+                        "evaluationPeriods": 1,
+                        "metricName": "Throttles",
+                        "namespace": "AWS/Lambda",
+                        "period": 300,
+                        "statistic": "Sum",
+                        "threshold": 5
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_cloudwatch.CfnAlarm",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cloudwatch.Alarm",
+                  "version": "2.104.0"
+                }
+              },
+              "TokenListCacheBucket": {
+                "id": "TokenListCacheBucket",
+                "path": "RoutingAPIStack/RoutingCachingStack/TokenListCacheBucket",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingCachingStack/TokenListCacheBucket/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                      "aws:cdk:cloudformation:props": {}
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.CfnBucket",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3.Bucket",
+                  "version": "2.104.0"
+                }
+              },
+              "InsightsLayerTokenList": {
+                "id": "InsightsLayerTokenList",
+                "path": "RoutingAPIStack/RoutingCachingStack/InsightsLayerTokenList",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.104.0"
+                }
+              },
+              "TokenListCacheLambda": {
+                "id": "TokenListCacheLambda",
+                "path": "RoutingAPIStack/RoutingCachingStack/TokenListCacheLambda",
+                "children": {
+                  "Code": {
+                    "id": "Code",
+                    "path": "RoutingAPIStack/RoutingCachingStack/TokenListCacheLambda/Code",
+                    "children": {
+                      "Stage": {
+                        "id": "Stage",
+                        "path": "RoutingAPIStack/RoutingCachingStack/TokenListCacheLambda/Code/Stage",
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.AssetStaging",
+                          "version": "2.104.0"
+                        }
+                      },
+                      "AssetBucket": {
+                        "id": "AssetBucket",
+                        "path": "RoutingAPIStack/RoutingCachingStack/TokenListCacheLambda/Code/AssetBucket",
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                          "version": "2.104.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingCachingStack/TokenListCacheLambda/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                      "aws:cdk:cloudformation:props": {
+                        "code": {
+                          "s3Bucket": {
+                            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                          },
+                          "s3Key": "45494f8f91153dfcca18c22561c5a1514d9ef7f488c1716dcb2f8d63ad97c8f2.zip"
+                        },
+                        "description": "Token List Cache Lambda",
+                        "environment": {
+                          "variables": {
+                            "TOKEN_LIST_CACHE_BUCKET": {
+                              "Ref": "TokenListCacheBucketB0AEA45C"
+                            },
+                            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+                          }
+                        },
+                        "handler": "index.handler",
+                        "layers": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:aws:lambda:",
+                                {
+                                  "Ref": "AWS::Region"
+                                },
+                                ":580247275435:layer:LambdaInsightsExtension:14"
+                              ]
+                            ]
+                          }
+                        ],
+                        "memorySize": 256,
+                        "role": {
+                          "Fn::GetAtt": [
+                            "RoutingLambdaRole270B0918",
+                            "Arn"
+                          ]
+                        },
+                        "runtime": "nodejs14.x",
+                        "timeout": 180,
+                        "tracingConfig": {
+                          "mode": "Active"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda_nodejs.NodejsFunction",
+                  "version": "2.104.0"
+                }
+              },
+              "ScheduleTokenListCache": {
+                "id": "ScheduleTokenListCache",
+                "path": "RoutingAPIStack/RoutingCachingStack/ScheduleTokenListCache",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingCachingStack/ScheduleTokenListCache/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Events::Rule",
+                      "aws:cdk:cloudformation:props": {
+                        "scheduleExpression": "rate(15 minutes)",
+                        "state": "ENABLED",
+                        "targets": [
+                          {
+                            "id": "Target0",
+                            "arn": {
+                              "Fn::GetAtt": [
+                                "TokenListCacheLambda8F76F145",
+                                "Arn"
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_events.CfnRule",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "AllowEventRuleRoutingAPIStackRoutingCachingStackTokenListCacheLambda94A9004E": {
+                    "id": "AllowEventRuleRoutingAPIStackRoutingCachingStackTokenListCacheLambda94A9004E",
+                    "path": "RoutingAPIStack/RoutingCachingStack/ScheduleTokenListCache/AllowEventRuleRoutingAPIStackRoutingCachingStackTokenListCacheLambda94A9004E",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                      "aws:cdk:cloudformation:props": {
+                        "action": "lambda:InvokeFunction",
+                        "functionName": {
+                          "Fn::GetAtt": [
+                            "TokenListCacheLambda8F76F145",
+                            "Arn"
+                          ]
+                        },
+                        "principal": "events.amazonaws.com",
+                        "sourceArn": {
+                          "Fn::GetAtt": [
+                            "ScheduleTokenListCacheC8724872",
+                            "Arn"
+                          ]
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_events.Rule",
+                  "version": "2.104.0"
+                }
+              },
+              "CDKMetadata": {
+                "id": "CDKMetadata",
+                "path": "RoutingAPIStack/RoutingCachingStack/CDKMetadata",
+                "children": {
+                  "Default": {
+                    "id": "Default",
+                    "path": "RoutingAPIStack/RoutingCachingStack/CDKMetadata/Default",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.CfnResource",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "Condition": {
+                    "id": "Condition",
+                    "path": "RoutingAPIStack/RoutingCachingStack/CDKMetadata/Condition",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.CfnCondition",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "constructs.Construct",
+                  "version": "10.3.0"
+                }
+              },
+              "RoutingAPIStackRoutingCachingStackPoolCacheBucket620A121AArn": {
+                "id": "RoutingAPIStackRoutingCachingStackPoolCacheBucket620A121AArn",
+                "path": "RoutingAPIStack/RoutingCachingStack/RoutingAPIStackRoutingCachingStackPoolCacheBucket620A121AArn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.104.0"
+                }
+              },
+              "RoutingAPIStackRoutingCachingStackPoolCacheBucket28CA80A17Arn": {
+                "id": "RoutingAPIStackRoutingCachingStackPoolCacheBucket28CA80A17Arn",
+                "path": "RoutingAPIStack/RoutingCachingStack/RoutingAPIStackRoutingCachingStackPoolCacheBucket28CA80A17Arn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.104.0"
+                }
+              },
+              "RoutingAPIStackRoutingCachingStackTokenListCacheBucket5B090E54Arn": {
+                "id": "RoutingAPIStackRoutingCachingStackTokenListCacheBucket5B090E54Arn",
+                "path": "RoutingAPIStack/RoutingCachingStack/RoutingAPIStackRoutingCachingStackTokenListCacheBucket5B090E54Arn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.104.0"
+                }
+              },
+              "RoutingAPIStackRoutingCachingStackPoolCacheBucket620A121ARef": {
+                "id": "RoutingAPIStackRoutingCachingStackPoolCacheBucket620A121ARef",
+                "path": "RoutingAPIStack/RoutingCachingStack/RoutingAPIStackRoutingCachingStackPoolCacheBucket620A121ARef",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.104.0"
+                }
+              },
+              "RoutingAPIStackRoutingCachingStackPoolCacheBucket28CA80A17Ref": {
+                "id": "RoutingAPIStackRoutingCachingStackPoolCacheBucket28CA80A17Ref",
+                "path": "RoutingAPIStack/RoutingCachingStack/RoutingAPIStackRoutingCachingStackPoolCacheBucket28CA80A17Ref",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.104.0"
+                }
+              },
+              "RoutingAPIStackRoutingCachingStackTokenListCacheBucket5B090E54Ref": {
+                "id": "RoutingAPIStackRoutingCachingStackTokenListCacheBucket5B090E54Ref",
+                "path": "RoutingAPIStack/RoutingCachingStack/RoutingAPIStackRoutingCachingStackTokenListCacheBucket5B090E54Ref",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.NestedStack",
+              "version": "2.104.0"
+            }
+          },
+          "RoutingCachingStack.NestedStack": {
+            "id": "RoutingCachingStack.NestedStack",
+            "path": "RoutingAPIStack/RoutingCachingStack.NestedStack",
+            "children": {
+              "RoutingCachingStack.NestedStackResource": {
+                "id": "RoutingCachingStack.NestedStackResource",
+                "path": "RoutingAPIStack/RoutingCachingStack.NestedStack/RoutingCachingStack.NestedStackResource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CloudFormation::Stack",
+                  "aws:cdk:cloudformation:props": {
+                    "templateUrl": {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "https://s3.",
+                          {
+                            "Ref": "AWS::Region"
+                          },
+                          ".",
+                          {
+                            "Ref": "AWS::URLSuffix"
+                          },
+                          "/",
+                          {
+                            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                          },
+                          "/26f32d55fb3fe00cfc1541d74da422a94eda1ad378987b169ba91d3c2282ac47.json"
+                        ]
+                      ]
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnStack",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.3.0"
+            }
+          },
+          "RoutingDatabaseStack": {
+            "id": "RoutingDatabaseStack",
+            "path": "RoutingAPIStack/RoutingDatabaseStack",
+            "children": {
+              "RoutesDB": {
+                "id": "RoutesDB",
+                "path": "RoutingAPIStack/RoutingDatabaseStack/RoutesDB",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingDatabaseStack/RoutesDB/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
+                      "aws:cdk:cloudformation:props": {
+                        "attributeDefinitions": [
+                          {
+                            "attributeName": "pairTradeTypeChainId",
+                            "attributeType": "S"
+                          },
+                          {
+                            "attributeName": "routeId",
+                            "attributeType": "N"
+                          }
+                        ],
+                        "billingMode": "PAY_PER_REQUEST",
+                        "keySchema": [
+                          {
+                            "attributeName": "pairTradeTypeChainId",
+                            "keyType": "HASH"
+                          },
+                          {
+                            "attributeName": "routeId",
+                            "keyType": "RANGE"
+                          }
+                        ],
+                        "tableName": "RoutesDB",
+                        "timeToLiveSpecification": {
+                          "attributeName": "ttl",
+                          "enabled": true
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_dynamodb.CfnTable",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "ScalingRole": {
+                    "id": "ScalingRole",
+                    "path": "RoutingAPIStack/RoutingDatabaseStack/RoutesDB/ScalingRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_dynamodb.Table",
+                  "version": "2.104.0"
+                }
+              },
+              "RoutesDbCacheReqFlagDB": {
+                "id": "RoutesDbCacheReqFlagDB",
+                "path": "RoutingAPIStack/RoutingDatabaseStack/RoutesDbCacheReqFlagDB",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingDatabaseStack/RoutesDbCacheReqFlagDB/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
+                      "aws:cdk:cloudformation:props": {
+                        "attributeDefinitions": [
+                          {
+                            "attributeName": "pairTradeTypeChainId",
+                            "attributeType": "S"
+                          },
+                          {
+                            "attributeName": "amount",
+                            "attributeType": "N"
+                          }
+                        ],
+                        "billingMode": "PAY_PER_REQUEST",
+                        "keySchema": [
+                          {
+                            "attributeName": "pairTradeTypeChainId",
+                            "keyType": "HASH"
+                          },
+                          {
+                            "attributeName": "amount",
+                            "keyType": "RANGE"
+                          }
+                        ],
+                        "tableName": "RoutesDbCacheReqFlagDB",
+                        "timeToLiveSpecification": {
+                          "attributeName": "ttl",
+                          "enabled": true
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_dynamodb.CfnTable",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "ScalingRole": {
+                    "id": "ScalingRole",
+                    "path": "RoutingAPIStack/RoutingDatabaseStack/RoutesDbCacheReqFlagDB/ScalingRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_dynamodb.Table",
+                  "version": "2.104.0"
+                }
+              },
+              "RouteCachingDB": {
+                "id": "RouteCachingDB",
+                "path": "RoutingAPIStack/RoutingDatabaseStack/RouteCachingDB",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingDatabaseStack/RouteCachingDB/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
+                      "aws:cdk:cloudformation:props": {
+                        "attributeDefinitions": [
+                          {
+                            "attributeName": "pairTradeTypeChainId",
+                            "attributeType": "S"
+                          },
+                          {
+                            "attributeName": "protocolsBucketBlockNumber",
+                            "attributeType": "S"
+                          }
+                        ],
+                        "billingMode": "PAY_PER_REQUEST",
+                        "keySchema": [
+                          {
+                            "attributeName": "pairTradeTypeChainId",
+                            "keyType": "HASH"
+                          },
+                          {
+                            "attributeName": "protocolsBucketBlockNumber",
+                            "keyType": "RANGE"
+                          }
+                        ],
+                        "tableName": "RouteCachingDB",
+                        "timeToLiveSpecification": {
+                          "attributeName": "ttl",
+                          "enabled": true
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_dynamodb.CfnTable",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "ScalingRole": {
+                    "id": "ScalingRole",
+                    "path": "RoutingAPIStack/RoutingDatabaseStack/RouteCachingDB/ScalingRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_dynamodb.Table",
+                  "version": "2.104.0"
+                }
+              },
+              "CacheReqFlagDB": {
+                "id": "CacheReqFlagDB",
+                "path": "RoutingAPIStack/RoutingDatabaseStack/CacheReqFlagDB",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingDatabaseStack/CacheReqFlagDB/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
+                      "aws:cdk:cloudformation:props": {
+                        "attributeDefinitions": [
+                          {
+                            "attributeName": "pairTradeTypeChainId",
+                            "attributeType": "S"
+                          },
+                          {
+                            "attributeName": "protocolsBucketBlockNumber",
+                            "attributeType": "S"
+                          }
+                        ],
+                        "billingMode": "PAY_PER_REQUEST",
+                        "keySchema": [
+                          {
+                            "attributeName": "pairTradeTypeChainId",
+                            "keyType": "HASH"
+                          },
+                          {
+                            "attributeName": "protocolsBucketBlockNumber",
+                            "keyType": "RANGE"
+                          }
+                        ],
+                        "tableName": "CacheReqFlagDB",
+                        "timeToLiveSpecification": {
+                          "attributeName": "ttl",
+                          "enabled": true
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_dynamodb.CfnTable",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "ScalingRole": {
+                    "id": "ScalingRole",
+                    "path": "RoutingAPIStack/RoutingDatabaseStack/CacheReqFlagDB/ScalingRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_dynamodb.Table",
+                  "version": "2.104.0"
+                }
+              },
+              "V3PoolsCachingDB": {
+                "id": "V3PoolsCachingDB",
+                "path": "RoutingAPIStack/RoutingDatabaseStack/V3PoolsCachingDB",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingDatabaseStack/V3PoolsCachingDB/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
+                      "aws:cdk:cloudformation:props": {
+                        "attributeDefinitions": [
+                          {
+                            "attributeName": "poolAddress",
+                            "attributeType": "S"
+                          },
+                          {
+                            "attributeName": "blockNumber",
+                            "attributeType": "N"
+                          }
+                        ],
+                        "billingMode": "PAY_PER_REQUEST",
+                        "keySchema": [
+                          {
+                            "attributeName": "poolAddress",
+                            "keyType": "HASH"
+                          },
+                          {
+                            "attributeName": "blockNumber",
+                            "keyType": "RANGE"
+                          }
+                        ],
+                        "tableName": "V3PoolsCachingDB",
+                        "timeToLiveSpecification": {
+                          "attributeName": "ttl",
+                          "enabled": true
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_dynamodb.CfnTable",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "ScalingRole": {
+                    "id": "ScalingRole",
+                    "path": "RoutingAPIStack/RoutingDatabaseStack/V3PoolsCachingDB/ScalingRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_dynamodb.Table",
+                  "version": "2.104.0"
+                }
+              },
+              "TokenPropertiesCachingDb": {
+                "id": "TokenPropertiesCachingDb",
+                "path": "RoutingAPIStack/RoutingDatabaseStack/TokenPropertiesCachingDb",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingDatabaseStack/TokenPropertiesCachingDb/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
+                      "aws:cdk:cloudformation:props": {
+                        "attributeDefinitions": [
+                          {
+                            "attributeName": "chainIdTokenAddress",
+                            "attributeType": "S"
+                          }
+                        ],
+                        "billingMode": "PAY_PER_REQUEST",
+                        "keySchema": [
+                          {
+                            "attributeName": "chainIdTokenAddress",
+                            "keyType": "HASH"
+                          }
+                        ],
+                        "tableName": "TokenPropertiesCachingDb",
+                        "timeToLiveSpecification": {
+                          "attributeName": "ttl",
+                          "enabled": true
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_dynamodb.CfnTable",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "ScalingRole": {
+                    "id": "ScalingRole",
+                    "path": "RoutingAPIStack/RoutingDatabaseStack/TokenPropertiesCachingDb/ScalingRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_dynamodb.Table",
+                  "version": "2.104.0"
+                }
+              },
+              "CDKMetadata": {
+                "id": "CDKMetadata",
+                "path": "RoutingAPIStack/RoutingDatabaseStack/CDKMetadata",
+                "children": {
+                  "Default": {
+                    "id": "Default",
+                    "path": "RoutingAPIStack/RoutingDatabaseStack/CDKMetadata/Default",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.CfnResource",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "Condition": {
+                    "id": "Condition",
+                    "path": "RoutingAPIStack/RoutingDatabaseStack/CDKMetadata/Condition",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.CfnCondition",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "constructs.Construct",
+                  "version": "10.3.0"
+                }
+              },
+              "RoutingAPIStackRoutingDatabaseStackRoutesDBCD90207EArn": {
+                "id": "RoutingAPIStackRoutingDatabaseStackRoutesDBCD90207EArn",
+                "path": "RoutingAPIStack/RoutingDatabaseStack/RoutingAPIStackRoutingDatabaseStackRoutesDBCD90207EArn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.104.0"
+                }
+              },
+              "RoutingAPIStackRoutingDatabaseStackRoutesDbCacheReqFlagDB77FB2D53Arn": {
+                "id": "RoutingAPIStackRoutingDatabaseStackRoutesDbCacheReqFlagDB77FB2D53Arn",
+                "path": "RoutingAPIStack/RoutingDatabaseStack/RoutingAPIStackRoutingDatabaseStackRoutesDbCacheReqFlagDB77FB2D53Arn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.104.0"
+                }
+              },
+              "RoutingAPIStackRoutingDatabaseStackRouteCachingDB3F557D78Arn": {
+                "id": "RoutingAPIStackRoutingDatabaseStackRouteCachingDB3F557D78Arn",
+                "path": "RoutingAPIStack/RoutingDatabaseStack/RoutingAPIStackRoutingDatabaseStackRouteCachingDB3F557D78Arn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.104.0"
+                }
+              },
+              "RoutingAPIStackRoutingDatabaseStackCacheReqFlagDB8F274447Arn": {
+                "id": "RoutingAPIStackRoutingDatabaseStackCacheReqFlagDB8F274447Arn",
+                "path": "RoutingAPIStack/RoutingDatabaseStack/RoutingAPIStackRoutingDatabaseStackCacheReqFlagDB8F274447Arn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.104.0"
+                }
+              },
+              "RoutingAPIStackRoutingDatabaseStackV3PoolsCachingDBB5CFCA07Arn": {
+                "id": "RoutingAPIStackRoutingDatabaseStackV3PoolsCachingDBB5CFCA07Arn",
+                "path": "RoutingAPIStack/RoutingDatabaseStack/RoutingAPIStackRoutingDatabaseStackV3PoolsCachingDBB5CFCA07Arn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.104.0"
+                }
+              },
+              "RoutingAPIStackRoutingDatabaseStackTokenPropertiesCachingDbC771742DArn": {
+                "id": "RoutingAPIStackRoutingDatabaseStackTokenPropertiesCachingDbC771742DArn",
+                "path": "RoutingAPIStack/RoutingDatabaseStack/RoutingAPIStackRoutingDatabaseStackTokenPropertiesCachingDbC771742DArn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.104.0"
+                }
+              },
+              "RoutingAPIStackRoutingDatabaseStackTokenPropertiesCachingDbC771742DRef": {
+                "id": "RoutingAPIStackRoutingDatabaseStackTokenPropertiesCachingDbC771742DRef",
+                "path": "RoutingAPIStack/RoutingDatabaseStack/RoutingAPIStackRoutingDatabaseStackTokenPropertiesCachingDbC771742DRef",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.NestedStack",
+              "version": "2.104.0"
+            }
+          },
+          "RoutingDatabaseStack.NestedStack": {
+            "id": "RoutingDatabaseStack.NestedStack",
+            "path": "RoutingAPIStack/RoutingDatabaseStack.NestedStack",
+            "children": {
+              "RoutingDatabaseStack.NestedStackResource": {
+                "id": "RoutingDatabaseStack.NestedStackResource",
+                "path": "RoutingAPIStack/RoutingDatabaseStack.NestedStack/RoutingDatabaseStack.NestedStackResource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CloudFormation::Stack",
+                  "aws:cdk:cloudformation:props": {
+                    "templateUrl": {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "https://s3.",
+                          {
+                            "Ref": "AWS::Region"
+                          },
+                          ".",
+                          {
+                            "Ref": "AWS::URLSuffix"
+                          },
+                          "/",
+                          {
+                            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                          },
+                          "/f773e5415c08a5d110dc9456be46d16a9dbea8d1b71b18b053a3ec845936e3ea.json"
+                        ]
+                      ]
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnStack",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.3.0"
+            }
+          },
+          "RoutingLambdaStack": {
+            "id": "RoutingLambdaStack",
+            "path": "RoutingAPIStack/RoutingLambdaStack",
+            "children": {
+              "RoutingLambdaRole": {
+                "id": "RoutingLambdaRole",
+                "path": "RoutingAPIStack/RoutingLambdaStack/RoutingLambdaRole",
+                "children": {
+                  "ImportRoutingLambdaRole": {
+                    "id": "ImportRoutingLambdaRole",
+                    "path": "RoutingAPIStack/RoutingLambdaStack/RoutingLambdaRole/ImportRoutingLambdaRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingLambdaStack/RoutingLambdaRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                              ]
+                            ]
+                          },
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AWSLambdaRole"
+                              ]
+                            ]
+                          },
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy"
+                              ]
+                            ]
+                          },
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/AWSXRayDaemonWriteAccess"
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "RoutingAPIStack/RoutingLambdaStack/RoutingLambdaRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "RoutingAPIStack/RoutingLambdaStack/RoutingLambdaRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "s3:GetObject*",
+                                    "s3:GetBucket*",
+                                    "s3:List*"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Ref": "referencetoRoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputsRoutingAPIStackRoutingCachingStackPoolCacheBucket620A121AArn"
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          {
+                                            "Ref": "referencetoRoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputsRoutingAPIStackRoutingCachingStackPoolCacheBucket620A121AArn"
+                                          },
+                                          "/*"
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": [
+                                    "s3:GetObject*",
+                                    "s3:GetBucket*",
+                                    "s3:List*"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Ref": "referencetoRoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputsRoutingAPIStackRoutingCachingStackPoolCacheBucket28CA80A17Arn"
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          {
+                                            "Ref": "referencetoRoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputsRoutingAPIStackRoutingCachingStackPoolCacheBucket28CA80A17Arn"
+                                          },
+                                          "/*"
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": [
+                                    "s3:GetObject*",
+                                    "s3:GetBucket*",
+                                    "s3:List*"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Ref": "referencetoRoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputsRoutingAPIStackRoutingCachingStackTokenListCacheBucket5B090E54Arn"
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          {
+                                            "Ref": "referencetoRoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputsRoutingAPIStackRoutingCachingStackTokenListCacheBucket5B090E54Arn"
+                                          },
+                                          "/*"
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": [
+                                    "dynamodb:BatchGetItem",
+                                    "dynamodb:GetRecords",
+                                    "dynamodb:GetShardIterator",
+                                    "dynamodb:Query",
+                                    "dynamodb:GetItem",
+                                    "dynamodb:Scan",
+                                    "dynamodb:ConditionCheckItem",
+                                    "dynamodb:BatchWriteItem",
+                                    "dynamodb:PutItem",
+                                    "dynamodb:UpdateItem",
+                                    "dynamodb:DeleteItem",
+                                    "dynamodb:DescribeTable"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Ref": "referencetoRoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputsRoutingAPIStackRoutingDatabaseStackRoutesDBCD90207EArn"
+                                    },
+                                    {
+                                      "Ref": "AWS::NoValue"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": [
+                                    "dynamodb:BatchGetItem",
+                                    "dynamodb:GetRecords",
+                                    "dynamodb:GetShardIterator",
+                                    "dynamodb:Query",
+                                    "dynamodb:GetItem",
+                                    "dynamodb:Scan",
+                                    "dynamodb:ConditionCheckItem",
+                                    "dynamodb:BatchWriteItem",
+                                    "dynamodb:PutItem",
+                                    "dynamodb:UpdateItem",
+                                    "dynamodb:DeleteItem",
+                                    "dynamodb:DescribeTable"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Ref": "referencetoRoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputsRoutingAPIStackRoutingDatabaseStackRoutesDbCacheReqFlagDB77FB2D53Arn"
+                                    },
+                                    {
+                                      "Ref": "AWS::NoValue"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": [
+                                    "dynamodb:BatchGetItem",
+                                    "dynamodb:GetRecords",
+                                    "dynamodb:GetShardIterator",
+                                    "dynamodb:Query",
+                                    "dynamodb:GetItem",
+                                    "dynamodb:Scan",
+                                    "dynamodb:ConditionCheckItem",
+                                    "dynamodb:BatchWriteItem",
+                                    "dynamodb:PutItem",
+                                    "dynamodb:UpdateItem",
+                                    "dynamodb:DeleteItem",
+                                    "dynamodb:DescribeTable"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Ref": "referencetoRoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputsRoutingAPIStackRoutingDatabaseStackRouteCachingDB3F557D78Arn"
+                                    },
+                                    {
+                                      "Ref": "AWS::NoValue"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": [
+                                    "dynamodb:BatchGetItem",
+                                    "dynamodb:GetRecords",
+                                    "dynamodb:GetShardIterator",
+                                    "dynamodb:Query",
+                                    "dynamodb:GetItem",
+                                    "dynamodb:Scan",
+                                    "dynamodb:ConditionCheckItem",
+                                    "dynamodb:BatchWriteItem",
+                                    "dynamodb:PutItem",
+                                    "dynamodb:UpdateItem",
+                                    "dynamodb:DeleteItem",
+                                    "dynamodb:DescribeTable"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Ref": "referencetoRoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputsRoutingAPIStackRoutingDatabaseStackCacheReqFlagDB8F274447Arn"
+                                    },
+                                    {
+                                      "Ref": "AWS::NoValue"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": [
+                                    "dynamodb:BatchGetItem",
+                                    "dynamodb:GetRecords",
+                                    "dynamodb:GetShardIterator",
+                                    "dynamodb:Query",
+                                    "dynamodb:GetItem",
+                                    "dynamodb:Scan",
+                                    "dynamodb:ConditionCheckItem",
+                                    "dynamodb:BatchWriteItem",
+                                    "dynamodb:PutItem",
+                                    "dynamodb:UpdateItem",
+                                    "dynamodb:DeleteItem",
+                                    "dynamodb:DescribeTable"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Ref": "referencetoRoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputsRoutingAPIStackRoutingDatabaseStackV3PoolsCachingDBB5CFCA07Arn"
+                                    },
+                                    {
+                                      "Ref": "AWS::NoValue"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": [
+                                    "dynamodb:BatchGetItem",
+                                    "dynamodb:GetRecords",
+                                    "dynamodb:GetShardIterator",
+                                    "dynamodb:Query",
+                                    "dynamodb:GetItem",
+                                    "dynamodb:Scan",
+                                    "dynamodb:ConditionCheckItem",
+                                    "dynamodb:BatchWriteItem",
+                                    "dynamodb:PutItem",
+                                    "dynamodb:UpdateItem",
+                                    "dynamodb:DeleteItem",
+                                    "dynamodb:DescribeTable"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Ref": "referencetoRoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputsRoutingAPIStackRoutingDatabaseStackTokenPropertiesCachingDbC771742DArn"
+                                    },
+                                    {
+                                      "Ref": "AWS::NoValue"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": "sqs:SendMessage",
+                                  "Effect": "Allow",
+                                  "Resource": {
+                                    "Fn::GetAtt": [
+                                      "RoutingLambda2DeadLetterQueue1461826B",
+                                      "Arn"
+                                    ]
+                                  }
+                                },
+                                {
+                                  "Action": [
+                                    "xray:PutTraceSegments",
+                                    "xray:PutTelemetryRecords"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": "*"
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "RoutingLambdaRoleDefaultPolicyB8EDD428",
+                            "roles": [
+                              {
+                                "Ref": "RoutingLambdaRole270B0918"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.104.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.104.0"
+                }
+              },
+              "InsightsLayer": {
+                "id": "InsightsLayer",
+                "path": "RoutingAPIStack/RoutingLambdaStack/InsightsLayer",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.104.0"
+                }
+              },
+              "RoutingLambda2": {
+                "id": "RoutingLambda2",
+                "path": "RoutingAPIStack/RoutingLambdaStack/RoutingLambda2",
+                "children": {
+                  "Code": {
+                    "id": "Code",
+                    "path": "RoutingAPIStack/RoutingLambdaStack/RoutingLambda2/Code",
+                    "children": {
+                      "Stage": {
+                        "id": "Stage",
+                        "path": "RoutingAPIStack/RoutingLambdaStack/RoutingLambda2/Code/Stage",
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.AssetStaging",
+                          "version": "2.104.0"
+                        }
+                      },
+                      "AssetBucket": {
+                        "id": "AssetBucket",
+                        "path": "RoutingAPIStack/RoutingLambdaStack/RoutingLambda2/Code/AssetBucket",
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                          "version": "2.104.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "DeadLetterQueue": {
+                    "id": "DeadLetterQueue",
+                    "path": "RoutingAPIStack/RoutingLambdaStack/RoutingLambda2/DeadLetterQueue",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "RoutingAPIStack/RoutingLambdaStack/RoutingLambda2/DeadLetterQueue/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
+                          "aws:cdk:cloudformation:props": {
+                            "messageRetentionPeriod": 1209600
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_sqs.CfnQueue",
+                          "version": "2.104.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_sqs.Queue",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingLambdaStack/RoutingLambda2/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                      "aws:cdk:cloudformation:props": {
+                        "code": {
+                          "s3Bucket": {
+                            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                          },
+                          "s3Key": "bb6863b4b707d14185d89da1d79bfa01e683a4201e84b3fe9b330982306af676.zip"
+                        },
+                        "deadLetterConfig": {
+                          "targetArn": {
+                            "Fn::GetAtt": [
+                              "RoutingLambda2DeadLetterQueue1461826B",
+                              "Arn"
+                            ]
+                          }
+                        },
+                        "description": "Routing Lambda",
+                        "environment": {
+                          "variables": {
+                            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+                            "CACHED_ROUTES_TABLE_NAME": "RouteCachingDB",
+                            "CACHED_V3_POOLS_TABLE_NAME": "V3PoolsCachingDB",
+                            "CACHING_REQUEST_FLAG_TABLE_NAME": "CacheReqFlagDB",
+                            "NODE_OPTIONS": "--enable-source-maps",
+                            "POOL_CACHE_BUCKET": {
+                              "Ref": "referencetoRoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputsRoutingAPIStackRoutingCachingStackPoolCacheBucket620A121ARef"
+                            },
+                            "POOL_CACHE_BUCKET_2": {
+                              "Ref": "referencetoRoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputsRoutingAPIStackRoutingCachingStackPoolCacheBucket28CA80A17Ref"
+                            },
+                            "POOL_CACHE_KEY": "poolCache.json",
+                            "ROUTES_CACHING_REQUEST_FLAG_TABLE_NAME": "RoutesDbCacheReqFlagDB",
+                            "ROUTES_TABLE_NAME": "RoutesDB",
+                            "TOKEN_LIST_CACHE_BUCKET": {
+                              "Ref": "referencetoRoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputsRoutingAPIStackRoutingCachingStackTokenListCacheBucket5B090E54Ref"
+                            },
+                            "TOKEN_PROPERTIES_CACHING_TABLE_NAME": {
+                              "Ref": "referencetoRoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputsRoutingAPIStackRoutingDatabaseStackTokenPropertiesCachingDbC771742DRef"
+                            },
+                            "VERSION": "6",
+                            "WEB3_RPC_8453": "https://mainnet.base.org"
+                          }
+                        },
+                        "ephemeralStorage": {
+                          "size": 1024
+                        },
+                        "handler": "index.quoteHandler",
+                        "layers": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:aws:lambda:",
+                                {
+                                  "Ref": "AWS::Region"
+                                },
+                                ":580247275435:layer:LambdaInsightsExtension:14"
+                              ]
+                            ]
+                          }
+                        ],
+                        "memorySize": 1792,
+                        "role": {
+                          "Fn::GetAtt": [
+                            "RoutingLambdaRole270B0918",
+                            "Arn"
+                          ]
+                        },
+                        "runtime": "nodejs18.x",
+                        "timeout": 9,
+                        "tracingConfig": {
+                          "mode": "Active"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "LogRetention": {
+                    "id": "LogRetention",
+                    "path": "RoutingAPIStack/RoutingLambdaStack/RoutingLambda2/LogRetention",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "RoutingAPIStack/RoutingLambdaStack/RoutingLambda2/LogRetention/Resource",
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.CfnResource",
+                          "version": "2.104.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_logs.LogRetention",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "LogGroup": {
+                    "id": "LogGroup",
+                    "path": "RoutingAPIStack/RoutingLambdaStack/RoutingLambda2/LogGroup",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "CurrentVersion": {
+                    "id": "CurrentVersion",
+                    "path": "RoutingAPIStack/RoutingLambdaStack/RoutingLambda2/CurrentVersion",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "RoutingAPIStack/RoutingLambdaStack/RoutingLambda2/CurrentVersion/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::Lambda::Version",
+                          "aws:cdk:cloudformation:props": {
+                            "functionName": {
+                              "Ref": "RoutingLambda2C4DF0900"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_lambda.CfnVersion",
+                          "version": "2.104.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_lambda.Version",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda_nodejs.NodejsFunction",
+                  "version": "2.104.0"
+                }
+              },
+              "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a": {
+                "id": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a",
+                "path": "RoutingAPIStack/RoutingLambdaStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a",
+                "children": {
+                  "Code": {
+                    "id": "Code",
+                    "path": "RoutingAPIStack/RoutingLambdaStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Code",
+                    "children": {
+                      "Stage": {
+                        "id": "Stage",
+                        "path": "RoutingAPIStack/RoutingLambdaStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Code/Stage",
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.AssetStaging",
+                          "version": "2.104.0"
+                        }
+                      },
+                      "AssetBucket": {
+                        "id": "AssetBucket",
+                        "path": "RoutingAPIStack/RoutingLambdaStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Code/AssetBucket",
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                          "version": "2.104.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "ServiceRole": {
+                    "id": "ServiceRole",
+                    "path": "RoutingAPIStack/RoutingLambdaStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole",
+                    "children": {
+                      "ImportServiceRole": {
+                        "id": "ImportServiceRole",
+                        "path": "RoutingAPIStack/RoutingLambdaStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/ImportServiceRole",
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.Resource",
+                          "version": "2.104.0"
+                        }
+                      },
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "RoutingAPIStack/RoutingLambdaStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                          "aws:cdk:cloudformation:props": {
+                            "assumeRolePolicyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": "sts:AssumeRole",
+                                  "Effect": "Allow",
+                                  "Principal": {
+                                    "Service": "lambda.amazonaws.com"
+                                  }
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "managedPolicyArns": [
+                              {
+                                "Fn::Join": [
+                                  "",
+                                  [
+                                    "arn:",
+                                    {
+                                      "Ref": "AWS::Partition"
+                                    },
+                                    ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                                  ]
+                                ]
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                          "version": "2.104.0"
+                        }
+                      },
+                      "DefaultPolicy": {
+                        "id": "DefaultPolicy",
+                        "path": "RoutingAPIStack/RoutingLambdaStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "RoutingAPIStack/RoutingLambdaStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                              "aws:cdk:cloudformation:props": {
+                                "policyDocument": {
+                                  "Statement": [
+                                    {
+                                      "Action": [
+                                        "logs:PutRetentionPolicy",
+                                        "logs:DeleteRetentionPolicy"
+                                      ],
+                                      "Effect": "Allow",
+                                      "Resource": "*"
+                                    }
+                                  ],
+                                  "Version": "2012-10-17"
+                                },
+                                "policyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+                                "roles": [
+                                  {
+                                    "Ref": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+                                  }
+                                ]
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                              "version": "2.104.0"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.Policy",
+                          "version": "2.104.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Role",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingLambdaStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Resource",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.CfnResource",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "constructs.Construct",
+                  "version": "10.3.0"
+                }
+              },
+              "RoutingAPI-LambdaErrorRate": {
+                "id": "RoutingAPI-LambdaErrorRate",
+                "path": "RoutingAPIStack/RoutingLambdaStack/RoutingAPI-LambdaErrorRate",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingLambdaStack/RoutingAPI-LambdaErrorRate/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::CloudWatch::Alarm",
+                      "aws:cdk:cloudformation:props": {
+                        "comparisonOperator": "GreaterThanOrEqualToThreshold",
+                        "evaluationPeriods": 3,
+                        "metrics": [
+                          {
+                            "expression": "errors / invocations",
+                            "id": "expr_1"
+                          },
+                          {
+                            "metricStat": {
+                              "metric": {
+                                "metricName": "Errors",
+                                "namespace": "AWS/Lambda",
+                                "dimensions": [
+                                  {
+                                    "name": "FunctionName",
+                                    "value": {
+                                      "Ref": "RoutingLambda2C4DF0900"
+                                    }
+                                  }
+                                ]
+                              },
+                              "period": 300,
+                              "stat": "Average"
+                            },
+                            "id": "errors",
+                            "returnData": false
+                          },
+                          {
+                            "metricStat": {
+                              "metric": {
+                                "metricName": "Invocations",
+                                "namespace": "AWS/Lambda",
+                                "dimensions": [
+                                  {
+                                    "name": "FunctionName",
+                                    "value": {
+                                      "Ref": "RoutingLambda2C4DF0900"
+                                    }
+                                  }
+                                ]
+                              },
+                              "period": 300,
+                              "stat": "Average"
+                            },
+                            "id": "invocations",
+                            "returnData": false
+                          }
+                        ],
+                        "threshold": 0.05
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_cloudwatch.CfnAlarm",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cloudwatch.Alarm",
+                  "version": "2.104.0"
+                }
+              },
+              "RoutingAPI-LambdaThrottles": {
+                "id": "RoutingAPI-LambdaThrottles",
+                "path": "RoutingAPIStack/RoutingLambdaStack/RoutingAPI-LambdaThrottles",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingLambdaStack/RoutingAPI-LambdaThrottles/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::CloudWatch::Alarm",
+                      "aws:cdk:cloudformation:props": {
+                        "comparisonOperator": "GreaterThanOrEqualToThreshold",
+                        "dimensions": [
+                          {
+                            "name": "FunctionName",
+                            "value": {
+                              "Ref": "RoutingLambda2C4DF0900"
+                            }
+                          }
+                        ],
+                        "evaluationPeriods": 3,
+                        "metricName": "Throttles",
+                        "namespace": "AWS/Lambda",
+                        "period": 300,
+                        "statistic": "Sum",
+                        "threshold": 10
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_cloudwatch.CfnAlarm",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cloudwatch.Alarm",
+                  "version": "2.104.0"
+                }
+              },
+              "RoutingLiveAlias": {
+                "id": "RoutingLiveAlias",
+                "path": "RoutingAPIStack/RoutingLambdaStack/RoutingLiveAlias",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/RoutingLambdaStack/RoutingLiveAlias/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Lambda::Alias",
+                      "aws:cdk:cloudformation:props": {
+                        "functionName": {
+                          "Ref": "RoutingLambda2C4DF0900"
+                        },
+                        "functionVersion": {
+                          "Fn::GetAtt": [
+                            "RoutingLambda2CurrentVersion49A1BB94191113497c32d336ee7bbe98a4627d8b",
+                            "Version"
+                          ]
+                        },
+                        "name": "live"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_lambda.CfnAlias",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "ScalingRole": {
+                    "id": "ScalingRole",
+                    "path": "RoutingAPIStack/RoutingLambdaStack/RoutingLiveAlias/ScalingRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.Alias",
+                  "version": "2.104.0"
+                }
+              },
+              "CDKMetadata": {
+                "id": "CDKMetadata",
+                "path": "RoutingAPIStack/RoutingLambdaStack/CDKMetadata",
+                "children": {
+                  "Default": {
+                    "id": "Default",
+                    "path": "RoutingAPIStack/RoutingLambdaStack/CDKMetadata/Default",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.CfnResource",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "Condition": {
+                    "id": "Condition",
+                    "path": "RoutingAPIStack/RoutingLambdaStack/CDKMetadata/Condition",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.CfnCondition",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "constructs.Construct",
+                  "version": "10.3.0"
+                }
+              },
+              "reference-to-RoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputs.RoutingAPIStackRoutingCachingStackPoolCacheBucket620A121AArn": {
+                "id": "reference-to-RoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputs.RoutingAPIStackRoutingCachingStackPoolCacheBucket620A121AArn",
+                "path": "RoutingAPIStack/RoutingLambdaStack/reference-to-RoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputs.RoutingAPIStackRoutingCachingStackPoolCacheBucket620A121AArn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnParameter",
+                  "version": "2.104.0"
+                }
+              },
+              "reference-to-RoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputs.RoutingAPIStackRoutingCachingStackPoolCacheBucket28CA80A17Arn": {
+                "id": "reference-to-RoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputs.RoutingAPIStackRoutingCachingStackPoolCacheBucket28CA80A17Arn",
+                "path": "RoutingAPIStack/RoutingLambdaStack/reference-to-RoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputs.RoutingAPIStackRoutingCachingStackPoolCacheBucket28CA80A17Arn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnParameter",
+                  "version": "2.104.0"
+                }
+              },
+              "reference-to-RoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputs.RoutingAPIStackRoutingCachingStackTokenListCacheBucket5B090E54Arn": {
+                "id": "reference-to-RoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputs.RoutingAPIStackRoutingCachingStackTokenListCacheBucket5B090E54Arn",
+                "path": "RoutingAPIStack/RoutingLambdaStack/reference-to-RoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputs.RoutingAPIStackRoutingCachingStackTokenListCacheBucket5B090E54Arn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnParameter",
+                  "version": "2.104.0"
+                }
+              },
+              "reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackRoutesDBCD90207EArn": {
+                "id": "reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackRoutesDBCD90207EArn",
+                "path": "RoutingAPIStack/RoutingLambdaStack/reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackRoutesDBCD90207EArn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnParameter",
+                  "version": "2.104.0"
+                }
+              },
+              "reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackRoutesDbCacheReqFlagDB77FB2D53Arn": {
+                "id": "reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackRoutesDbCacheReqFlagDB77FB2D53Arn",
+                "path": "RoutingAPIStack/RoutingLambdaStack/reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackRoutesDbCacheReqFlagDB77FB2D53Arn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnParameter",
+                  "version": "2.104.0"
+                }
+              },
+              "reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackRouteCachingDB3F557D78Arn": {
+                "id": "reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackRouteCachingDB3F557D78Arn",
+                "path": "RoutingAPIStack/RoutingLambdaStack/reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackRouteCachingDB3F557D78Arn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnParameter",
+                  "version": "2.104.0"
+                }
+              },
+              "reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackCacheReqFlagDB8F274447Arn": {
+                "id": "reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackCacheReqFlagDB8F274447Arn",
+                "path": "RoutingAPIStack/RoutingLambdaStack/reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackCacheReqFlagDB8F274447Arn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnParameter",
+                  "version": "2.104.0"
+                }
+              },
+              "reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackV3PoolsCachingDBB5CFCA07Arn": {
+                "id": "reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackV3PoolsCachingDBB5CFCA07Arn",
+                "path": "RoutingAPIStack/RoutingLambdaStack/reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackV3PoolsCachingDBB5CFCA07Arn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnParameter",
+                  "version": "2.104.0"
+                }
+              },
+              "reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackTokenPropertiesCachingDbC771742DArn": {
+                "id": "reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackTokenPropertiesCachingDbC771742DArn",
+                "path": "RoutingAPIStack/RoutingLambdaStack/reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackTokenPropertiesCachingDbC771742DArn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnParameter",
+                  "version": "2.104.0"
+                }
+              },
+              "reference-to-RoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputs.RoutingAPIStackRoutingCachingStackPoolCacheBucket620A121ARef": {
+                "id": "reference-to-RoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputs.RoutingAPIStackRoutingCachingStackPoolCacheBucket620A121ARef",
+                "path": "RoutingAPIStack/RoutingLambdaStack/reference-to-RoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputs.RoutingAPIStackRoutingCachingStackPoolCacheBucket620A121ARef",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnParameter",
+                  "version": "2.104.0"
+                }
+              },
+              "reference-to-RoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputs.RoutingAPIStackRoutingCachingStackPoolCacheBucket28CA80A17Ref": {
+                "id": "reference-to-RoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputs.RoutingAPIStackRoutingCachingStackPoolCacheBucket28CA80A17Ref",
+                "path": "RoutingAPIStack/RoutingLambdaStack/reference-to-RoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputs.RoutingAPIStackRoutingCachingStackPoolCacheBucket28CA80A17Ref",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnParameter",
+                  "version": "2.104.0"
+                }
+              },
+              "reference-to-RoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputs.RoutingAPIStackRoutingCachingStackTokenListCacheBucket5B090E54Ref": {
+                "id": "reference-to-RoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputs.RoutingAPIStackRoutingCachingStackTokenListCacheBucket5B090E54Ref",
+                "path": "RoutingAPIStack/RoutingLambdaStack/reference-to-RoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputs.RoutingAPIStackRoutingCachingStackTokenListCacheBucket5B090E54Ref",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnParameter",
+                  "version": "2.104.0"
+                }
+              },
+              "reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackTokenPropertiesCachingDbC771742DRef": {
+                "id": "reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackTokenPropertiesCachingDbC771742DRef",
+                "path": "RoutingAPIStack/RoutingLambdaStack/reference-to-RoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputs.RoutingAPIStackRoutingDatabaseStackTokenPropertiesCachingDbC771742DRef",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnParameter",
+                  "version": "2.104.0"
+                }
+              },
+              "RoutingAPIStackRoutingLambdaStackRoutingLiveAliasC0D98E21Ref": {
+                "id": "RoutingAPIStackRoutingLambdaStackRoutingLiveAliasC0D98E21Ref",
+                "path": "RoutingAPIStack/RoutingLambdaStack/RoutingAPIStackRoutingLambdaStackRoutingLiveAliasC0D98E21Ref",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.NestedStack",
+              "version": "2.104.0"
+            }
+          },
+          "RoutingLambdaStack.NestedStack": {
+            "id": "RoutingLambdaStack.NestedStack",
+            "path": "RoutingAPIStack/RoutingLambdaStack.NestedStack",
+            "children": {
+              "RoutingLambdaStack.NestedStackResource": {
+                "id": "RoutingLambdaStack.NestedStackResource",
+                "path": "RoutingAPIStack/RoutingLambdaStack.NestedStack/RoutingLambdaStack.NestedStackResource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CloudFormation::Stack",
+                  "aws:cdk:cloudformation:props": {
+                    "parameters": {
+                      "referencetoRoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputsRoutingAPIStackRoutingCachingStackPoolCacheBucket620A121AArn": {
+                        "Fn::GetAtt": [
+                          "RoutingCachingStackNestedStackRoutingCachingStackNestedStackResource5CAB1140",
+                          "Outputs.RoutingAPIStackRoutingCachingStackPoolCacheBucket620A121AArn"
+                        ]
+                      },
+                      "referencetoRoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputsRoutingAPIStackRoutingCachingStackPoolCacheBucket28CA80A17Arn": {
+                        "Fn::GetAtt": [
+                          "RoutingCachingStackNestedStackRoutingCachingStackNestedStackResource5CAB1140",
+                          "Outputs.RoutingAPIStackRoutingCachingStackPoolCacheBucket28CA80A17Arn"
+                        ]
+                      },
+                      "referencetoRoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputsRoutingAPIStackRoutingCachingStackTokenListCacheBucket5B090E54Arn": {
+                        "Fn::GetAtt": [
+                          "RoutingCachingStackNestedStackRoutingCachingStackNestedStackResource5CAB1140",
+                          "Outputs.RoutingAPIStackRoutingCachingStackTokenListCacheBucket5B090E54Arn"
+                        ]
+                      },
+                      "referencetoRoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputsRoutingAPIStackRoutingDatabaseStackRoutesDBCD90207EArn": {
+                        "Fn::GetAtt": [
+                          "RoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource6A37F2CD",
+                          "Outputs.RoutingAPIStackRoutingDatabaseStackRoutesDBCD90207EArn"
+                        ]
+                      },
+                      "referencetoRoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputsRoutingAPIStackRoutingDatabaseStackRoutesDbCacheReqFlagDB77FB2D53Arn": {
+                        "Fn::GetAtt": [
+                          "RoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource6A37F2CD",
+                          "Outputs.RoutingAPIStackRoutingDatabaseStackRoutesDbCacheReqFlagDB77FB2D53Arn"
+                        ]
+                      },
+                      "referencetoRoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputsRoutingAPIStackRoutingDatabaseStackRouteCachingDB3F557D78Arn": {
+                        "Fn::GetAtt": [
+                          "RoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource6A37F2CD",
+                          "Outputs.RoutingAPIStackRoutingDatabaseStackRouteCachingDB3F557D78Arn"
+                        ]
+                      },
+                      "referencetoRoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputsRoutingAPIStackRoutingDatabaseStackCacheReqFlagDB8F274447Arn": {
+                        "Fn::GetAtt": [
+                          "RoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource6A37F2CD",
+                          "Outputs.RoutingAPIStackRoutingDatabaseStackCacheReqFlagDB8F274447Arn"
+                        ]
+                      },
+                      "referencetoRoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputsRoutingAPIStackRoutingDatabaseStackV3PoolsCachingDBB5CFCA07Arn": {
+                        "Fn::GetAtt": [
+                          "RoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource6A37F2CD",
+                          "Outputs.RoutingAPIStackRoutingDatabaseStackV3PoolsCachingDBB5CFCA07Arn"
+                        ]
+                      },
+                      "referencetoRoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputsRoutingAPIStackRoutingDatabaseStackTokenPropertiesCachingDbC771742DArn": {
+                        "Fn::GetAtt": [
+                          "RoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource6A37F2CD",
+                          "Outputs.RoutingAPIStackRoutingDatabaseStackTokenPropertiesCachingDbC771742DArn"
+                        ]
+                      },
+                      "referencetoRoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputsRoutingAPIStackRoutingCachingStackPoolCacheBucket620A121ARef": {
+                        "Fn::GetAtt": [
+                          "RoutingCachingStackNestedStackRoutingCachingStackNestedStackResource5CAB1140",
+                          "Outputs.RoutingAPIStackRoutingCachingStackPoolCacheBucket620A121ARef"
+                        ]
+                      },
+                      "referencetoRoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputsRoutingAPIStackRoutingCachingStackPoolCacheBucket28CA80A17Ref": {
+                        "Fn::GetAtt": [
+                          "RoutingCachingStackNestedStackRoutingCachingStackNestedStackResource5CAB1140",
+                          "Outputs.RoutingAPIStackRoutingCachingStackPoolCacheBucket28CA80A17Ref"
+                        ]
+                      },
+                      "referencetoRoutingAPIStackRoutingCachingStackNestedStackRoutingCachingStackNestedStackResource3F7983BFOutputsRoutingAPIStackRoutingCachingStackTokenListCacheBucket5B090E54Ref": {
+                        "Fn::GetAtt": [
+                          "RoutingCachingStackNestedStackRoutingCachingStackNestedStackResource5CAB1140",
+                          "Outputs.RoutingAPIStackRoutingCachingStackTokenListCacheBucket5B090E54Ref"
+                        ]
+                      },
+                      "referencetoRoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputsRoutingAPIStackRoutingDatabaseStackTokenPropertiesCachingDbC771742DRef": {
+                        "Fn::GetAtt": [
+                          "RoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource6A37F2CD",
+                          "Outputs.RoutingAPIStackRoutingDatabaseStackTokenPropertiesCachingDbC771742DRef"
+                        ]
+                      }
+                    },
+                    "templateUrl": {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "https://s3.",
+                          {
+                            "Ref": "AWS::Region"
+                          },
+                          ".",
+                          {
+                            "Ref": "AWS::URLSuffix"
+                          },
+                          "/",
+                          {
+                            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                          },
+                          "/a5cef30576e252e6d71a5a2e8b44ab116f501cd82eb9ffaad036f0caabe18319.json"
+                        ]
+                      ]
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnStack",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.3.0"
+            }
+          },
+          "RoutingAPIGAccessLogs": {
+            "id": "RoutingAPIGAccessLogs",
+            "path": "RoutingAPIStack/RoutingAPIGAccessLogs",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "RoutingAPIStack/RoutingAPIGAccessLogs/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Logs::LogGroup",
+                  "aws:cdk:cloudformation:props": {
+                    "retentionInDays": 731
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_logs.CfnLogGroup",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_logs.LogGroup",
+              "version": "2.104.0"
+            }
+          },
+          "routing-api": {
+            "id": "routing-api",
+            "path": "RoutingAPIStack/routing-api",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "RoutingAPIStack/routing-api/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::RestApi",
+                  "aws:cdk:cloudformation:props": {
+                    "name": "Routing API"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.CfnRestApi",
+                  "version": "2.104.0"
+                }
+              },
+              "CloudWatchRole": {
+                "id": "CloudWatchRole",
+                "path": "RoutingAPIStack/routing-api/CloudWatchRole",
+                "children": {
+                  "ImportCloudWatchRole": {
+                    "id": "ImportCloudWatchRole",
+                    "path": "RoutingAPIStack/routing-api/CloudWatchRole/ImportCloudWatchRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/routing-api/CloudWatchRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "apigateway.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.104.0"
+                }
+              },
+              "Account": {
+                "id": "Account",
+                "path": "RoutingAPIStack/routing-api/Account",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Account",
+                  "aws:cdk:cloudformation:props": {
+                    "cloudWatchRoleArn": {
+                      "Fn::GetAtt": [
+                        "routingapiCloudWatchRole760E6BC5",
+                        "Arn"
+                      ]
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.CfnAccount",
+                  "version": "2.104.0"
+                }
+              },
+              "Deployment": {
+                "id": "Deployment",
+                "path": "RoutingAPIStack/routing-api/Deployment",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/routing-api/Deployment/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::Deployment",
+                      "aws:cdk:cloudformation:props": {
+                        "description": "Automatically created by the RestApi construct",
+                        "restApiId": {
+                          "Ref": "routingapiA6A29457"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.CfnDeployment",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.Deployment",
+                  "version": "2.104.0"
+                }
+              },
+              "DeploymentStage.prod": {
+                "id": "DeploymentStage.prod",
+                "path": "RoutingAPIStack/routing-api/DeploymentStage.prod",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "RoutingAPIStack/routing-api/DeploymentStage.prod/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::Stage",
+                      "aws:cdk:cloudformation:props": {
+                        "accessLogSetting": {
+                          "destinationArn": {
+                            "Fn::GetAtt": [
+                              "RoutingAPIGAccessLogs5ADEDFA4",
+                              "Arn"
+                            ]
+                          },
+                          "format": "{\"requestId\":\"$context.requestId\",\"requestTime\":\"$context.requestTime\",\"httpMethod\":\"$context.httpMethod\",\"resourcePath\":\"$context.resourcePath\",\"status\":\"$context.status\",\"protocol\":\"$context.protocol\",\"responseLength\":\"$context.responseLength\"}"
+                        },
+                        "deploymentId": {
+                          "Ref": "routingapiDeploymentB21C3ACB2003f23537c58721b84cc0c62afad948"
+                        },
+                        "methodSettings": [
+                          {
+                            "httpMethod": "*",
+                            "resourcePath": "/*",
+                            "dataTraceEnabled": false,
+                            "loggingLevel": "ERROR"
+                          }
+                        ],
+                        "restApiId": {
+                          "Ref": "routingapiA6A29457"
+                        },
+                        "stageName": "prod",
+                        "tracingEnabled": true
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.CfnStage",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.Stage",
+                  "version": "2.104.0"
+                }
+              },
+              "Endpoint": {
+                "id": "Endpoint",
+                "path": "RoutingAPIStack/routing-api/Endpoint",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.104.0"
+                }
+              },
+              "Default": {
+                "id": "Default",
+                "path": "RoutingAPIStack/routing-api/Default",
+                "children": {
+                  "OPTIONS": {
+                    "id": "OPTIONS",
+                    "path": "RoutingAPIStack/routing-api/Default/OPTIONS",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "RoutingAPIStack/routing-api/Default/OPTIONS/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                          "aws:cdk:cloudformation:props": {
+                            "apiKeyRequired": false,
+                            "authorizationType": "NONE",
+                            "httpMethod": "OPTIONS",
+                            "integration": {
+                              "type": "MOCK",
+                              "requestTemplates": {
+                                "application/json": "{ statusCode: 200 }"
+                              },
+                              "integrationResponses": [
+                                {
+                                  "statusCode": "204",
+                                  "responseParameters": {
+                                    "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                                    "method.response.header.Access-Control-Allow-Origin": "'*'",
+                                    "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+                                  }
+                                }
+                              ]
+                            },
+                            "methodResponses": [
+                              {
+                                "statusCode": "204",
+                                "responseParameters": {
+                                  "method.response.header.Access-Control-Allow-Headers": true,
+                                  "method.response.header.Access-Control-Allow-Origin": true,
+                                  "method.response.header.Access-Control-Allow-Methods": true
+                                }
+                              }
+                            ],
+                            "resourceId": {
+                              "Fn::GetAtt": [
+                                "routingapiA6A29457",
+                                "RootResourceId"
+                              ]
+                            },
+                            "restApiId": {
+                              "Ref": "routingapiA6A29457"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                          "version": "2.104.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                      "version": "2.104.0"
+                    }
+                  },
+                  "quote": {
+                    "id": "quote",
+                    "path": "RoutingAPIStack/routing-api/Default/quote",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "RoutingAPIStack/routing-api/Default/quote/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                          "aws:cdk:cloudformation:props": {
+                            "parentId": {
+                              "Fn::GetAtt": [
+                                "routingapiA6A29457",
+                                "RootResourceId"
+                              ]
+                            },
+                            "pathPart": "quote",
+                            "restApiId": {
+                              "Ref": "routingapiA6A29457"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                          "version": "2.104.0"
+                        }
+                      },
+                      "OPTIONS": {
+                        "id": "OPTIONS",
+                        "path": "RoutingAPIStack/routing-api/Default/quote/OPTIONS",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "RoutingAPIStack/routing-api/Default/quote/OPTIONS/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                              "aws:cdk:cloudformation:props": {
+                                "apiKeyRequired": false,
+                                "authorizationType": "NONE",
+                                "httpMethod": "OPTIONS",
+                                "integration": {
+                                  "type": "MOCK",
+                                  "requestTemplates": {
+                                    "application/json": "{ statusCode: 200 }"
+                                  },
+                                  "integrationResponses": [
+                                    {
+                                      "statusCode": "204",
+                                      "responseParameters": {
+                                        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                                        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "methodResponses": [
+                                  {
+                                    "statusCode": "204",
+                                    "responseParameters": {
+                                      "method.response.header.Access-Control-Allow-Headers": true,
+                                      "method.response.header.Access-Control-Allow-Origin": true,
+                                      "method.response.header.Access-Control-Allow-Methods": true
+                                    }
+                                  }
+                                ],
+                                "resourceId": {
+                                  "Ref": "routingapiquoteCE190E63"
+                                },
+                                "restApiId": {
+                                  "Ref": "routingapiA6A29457"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "version": "2.104.0"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                          "version": "2.104.0"
+                        }
+                      },
+                      "GET": {
+                        "id": "GET",
+                        "path": "RoutingAPIStack/routing-api/Default/quote/GET",
+                        "children": {
+                          "ApiPermission.RoutingAPIStackroutingapi4A341B96.GET..quote": {
+                            "id": "ApiPermission.RoutingAPIStackroutingapi4A341B96.GET..quote",
+                            "path": "RoutingAPIStack/routing-api/Default/quote/GET/ApiPermission.RoutingAPIStackroutingapi4A341B96.GET..quote",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                              "aws:cdk:cloudformation:props": {
+                                "action": "lambda:InvokeFunction",
+                                "functionName": {
+                                  "Fn::GetAtt": [
+                                    "RoutingLambdaStackNestedStackRoutingLambdaStackNestedStackResource809DEBCF",
+                                    "Outputs.RoutingAPIStackRoutingLambdaStackRoutingLiveAliasC0D98E21Ref"
+                                  ]
+                                },
+                                "principal": "apigateway.amazonaws.com",
+                                "sourceArn": {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:",
+                                      {
+                                        "Ref": "AWS::Partition"
+                                      },
+                                      ":execute-api:",
+                                      {
+                                        "Ref": "AWS::Region"
+                                      },
+                                      ":",
+                                      {
+                                        "Ref": "AWS::AccountId"
+                                      },
+                                      ":",
+                                      {
+                                        "Ref": "routingapiA6A29457"
+                                      },
+                                      "/",
+                                      {
+                                        "Ref": "routingapiDeploymentStageprod8BE7ABCF"
+                                      },
+                                      "/GET/quote"
+                                    ]
+                                  ]
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                              "version": "2.104.0"
+                            }
+                          },
+                          "ApiPermission.Test.RoutingAPIStackroutingapi4A341B96.GET..quote": {
+                            "id": "ApiPermission.Test.RoutingAPIStackroutingapi4A341B96.GET..quote",
+                            "path": "RoutingAPIStack/routing-api/Default/quote/GET/ApiPermission.Test.RoutingAPIStackroutingapi4A341B96.GET..quote",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                              "aws:cdk:cloudformation:props": {
+                                "action": "lambda:InvokeFunction",
+                                "functionName": {
+                                  "Fn::GetAtt": [
+                                    "RoutingLambdaStackNestedStackRoutingLambdaStackNestedStackResource809DEBCF",
+                                    "Outputs.RoutingAPIStackRoutingLambdaStackRoutingLiveAliasC0D98E21Ref"
+                                  ]
+                                },
+                                "principal": "apigateway.amazonaws.com",
+                                "sourceArn": {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:",
+                                      {
+                                        "Ref": "AWS::Partition"
+                                      },
+                                      ":execute-api:",
+                                      {
+                                        "Ref": "AWS::Region"
+                                      },
+                                      ":",
+                                      {
+                                        "Ref": "AWS::AccountId"
+                                      },
+                                      ":",
+                                      {
+                                        "Ref": "routingapiA6A29457"
+                                      },
+                                      "/test-invoke-stage/GET/quote"
+                                    ]
+                                  ]
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                              "version": "2.104.0"
+                            }
+                          },
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "RoutingAPIStack/routing-api/Default/quote/GET/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                              "aws:cdk:cloudformation:props": {
+                                "authorizationType": "NONE",
+                                "httpMethod": "GET",
+                                "integration": {
+                                  "type": "AWS_PROXY",
+                                  "uri": {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:",
+                                        {
+                                          "Ref": "AWS::Partition"
+                                        },
+                                        ":apigateway:",
+                                        {
+                                          "Ref": "AWS::Region"
+                                        },
+                                        ":lambda:path/2015-03-31/functions/",
+                                        {
+                                          "Fn::GetAtt": [
+                                            "RoutingLambdaStackNestedStackRoutingLambdaStackNestedStackResource809DEBCF",
+                                            "Outputs.RoutingAPIStackRoutingLambdaStackRoutingLiveAliasC0D98E21Ref"
+                                          ]
+                                        },
+                                        "/invocations"
+                                      ]
+                                    ]
+                                  },
+                                  "integrationHttpMethod": "POST"
+                                },
+                                "resourceId": {
+                                  "Ref": "routingapiquoteCE190E63"
+                                },
+                                "restApiId": {
+                                  "Ref": "routingapiA6A29457"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "version": "2.104.0"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                          "version": "2.104.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.ResourceBase",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_apigateway.RestApi",
+              "version": "2.104.0"
+            }
+          },
+          "RoutingAPIIPThrottlingACL": {
+            "id": "RoutingAPIIPThrottlingACL",
+            "path": "RoutingAPIStack/RoutingAPIIPThrottlingACL",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::WAFv2::WebACL",
+              "aws:cdk:cloudformation:props": {
+                "customResponseBodies": {
+                  "RoutingAPIThrottledResponseBody": {
+                    "contentType": "APPLICATION_JSON",
+                    "content": "{\"errorCode\": \"TOO_MANY_REQUESTS\"}"
+                  }
+                },
+                "defaultAction": {
+                  "allow": {}
+                },
+                "name": "RoutingAPIIPThrottling",
+                "rules": [
+                  {
+                    "name": "ip",
+                    "priority": 0,
+                    "statement": {
+                      "rateBasedStatement": {
+                        "limit": 120,
+                        "aggregateKeyType": "FORWARDED_IP",
+                        "forwardedIpConfig": {
+                          "headerName": "X-Forwarded-For",
+                          "fallbackBehavior": "MATCH"
+                        },
+                        "scopeDownStatement": {
+                          "notStatement": {
+                            "statement": {
+                              "byteMatchStatement": {
+                                "fieldToMatch": {
+                                  "singleHeader": {
+                                    "name": "x-api-key"
+                                  }
+                                },
+                                "positionalConstraint": "EXACTLY",
+                                "searchString": "test-api-key",
+                                "textTransformations": [
+                                  {
+                                    "type": "NONE",
+                                    "priority": 0
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "action": {
+                      "block": {
+                        "customResponse": {
+                          "responseCode": 429,
+                          "customResponseBodyKey": "RoutingAPIThrottledResponseBody"
+                        }
+                      }
+                    },
+                    "visibilityConfig": {
+                      "sampledRequestsEnabled": true,
+                      "cloudWatchMetricsEnabled": true,
+                      "metricName": "RoutingAPIIPBasedThrottlingRule"
+                    }
+                  }
+                ],
+                "scope": "REGIONAL",
+                "visibilityConfig": {
+                  "sampledRequestsEnabled": true,
+                  "cloudWatchMetricsEnabled": true,
+                  "metricName": "RoutingAPIIPBasedThrottling"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_wafv2.CfnWebACL",
+              "version": "2.104.0"
+            }
+          },
+          "RoutingAPIIPThrottlingAssociation": {
+            "id": "RoutingAPIIPThrottlingAssociation",
+            "path": "RoutingAPIStack/RoutingAPIIPThrottlingAssociation",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::WAFv2::WebACLAssociation",
+              "aws:cdk:cloudformation:props": {
+                "resourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      "::/restapis/",
+                      {
+                        "Ref": "routingapiA6A29457"
+                      },
+                      "/stages/",
+                      {
+                        "Ref": "routingapiDeploymentStageprod8BE7ABCF"
+                      }
+                    ]
+                  ]
+                },
+                "webAclArn": {
+                  "Fn::GetAtt": [
+                    "RoutingAPIIPThrottlingACL",
+                    "Arn"
+                  ]
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_wafv2.CfnWebACLAssociation",
+              "version": "2.104.0"
+            }
+          },
+          "RoutingAPI-SEV2-5XXAlarm": {
+            "id": "RoutingAPI-SEV2-5XXAlarm",
+            "path": "RoutingAPIStack/RoutingAPI-SEV2-5XXAlarm",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "RoutingAPIStack/RoutingAPI-SEV2-5XXAlarm/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CloudWatch::Alarm",
+                  "aws:cdk:cloudformation:props": {
+                    "alarmName": "RoutingAPI-SEV2-5XX",
+                    "comparisonOperator": "GreaterThanOrEqualToThreshold",
+                    "dimensions": [
+                      {
+                        "name": "ApiName",
+                        "value": "Routing API"
+                      }
+                    ],
+                    "evaluationPeriods": 3,
+                    "metricName": "5XXError",
+                    "namespace": "AWS/ApiGateway",
+                    "period": 300,
+                    "statistic": "Average",
+                    "threshold": 0.05
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cloudwatch.CfnAlarm",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_cloudwatch.Alarm",
+              "version": "2.104.0"
+            }
+          },
+          "RoutingAPI-SEV2-4XXAlarm": {
+            "id": "RoutingAPI-SEV2-4XXAlarm",
+            "path": "RoutingAPIStack/RoutingAPI-SEV2-4XXAlarm",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "RoutingAPIStack/RoutingAPI-SEV2-4XXAlarm/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CloudWatch::Alarm",
+                  "aws:cdk:cloudformation:props": {
+                    "alarmName": "RoutingAPI-SEV2-4XX",
+                    "comparisonOperator": "GreaterThanOrEqualToThreshold",
+                    "dimensions": [
+                      {
+                        "name": "ApiName",
+                        "value": "Routing API"
+                      }
+                    ],
+                    "evaluationPeriods": 3,
+                    "metricName": "4XXError",
+                    "namespace": "AWS/ApiGateway",
+                    "period": 300,
+                    "statistic": "Average",
+                    "threshold": 0.95
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cloudwatch.CfnAlarm",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_cloudwatch.Alarm",
+              "version": "2.104.0"
+            }
+          },
+          "RoutingAPI-SEV2-Latency": {
+            "id": "RoutingAPI-SEV2-Latency",
+            "path": "RoutingAPIStack/RoutingAPI-SEV2-Latency",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "RoutingAPIStack/RoutingAPI-SEV2-Latency/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CloudWatch::Alarm",
+                  "aws:cdk:cloudformation:props": {
+                    "alarmName": "RoutingAPI-SEV2-Latency",
+                    "comparisonOperator": "GreaterThanOrEqualToThreshold",
+                    "dimensions": [
+                      {
+                        "name": "ApiName",
+                        "value": "Routing API"
+                      }
+                    ],
+                    "evaluationPeriods": 3,
+                    "extendedStatistic": "p90",
+                    "metricName": "Latency",
+                    "namespace": "AWS/ApiGateway",
+                    "period": 300,
+                    "threshold": 8500
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cloudwatch.CfnAlarm",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_cloudwatch.Alarm",
+              "version": "2.104.0"
+            }
+          },
+          "RoutingAPI-SEV3-5XXAlarm": {
+            "id": "RoutingAPI-SEV3-5XXAlarm",
+            "path": "RoutingAPIStack/RoutingAPI-SEV3-5XXAlarm",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "RoutingAPIStack/RoutingAPI-SEV3-5XXAlarm/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CloudWatch::Alarm",
+                  "aws:cdk:cloudformation:props": {
+                    "alarmName": "RoutingAPI-SEV3-5XX",
+                    "comparisonOperator": "GreaterThanOrEqualToThreshold",
+                    "dimensions": [
+                      {
+                        "name": "ApiName",
+                        "value": "Routing API"
+                      }
+                    ],
+                    "evaluationPeriods": 3,
+                    "metricName": "5XXError",
+                    "namespace": "AWS/ApiGateway",
+                    "period": 300,
+                    "statistic": "Average",
+                    "threshold": 0.03
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cloudwatch.CfnAlarm",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_cloudwatch.Alarm",
+              "version": "2.104.0"
+            }
+          },
+          "RoutingAPI-SEV3-4XXAlarm": {
+            "id": "RoutingAPI-SEV3-4XXAlarm",
+            "path": "RoutingAPIStack/RoutingAPI-SEV3-4XXAlarm",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "RoutingAPIStack/RoutingAPI-SEV3-4XXAlarm/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CloudWatch::Alarm",
+                  "aws:cdk:cloudformation:props": {
+                    "alarmName": "RoutingAPI-SEV3-4XX",
+                    "comparisonOperator": "GreaterThanOrEqualToThreshold",
+                    "dimensions": [
+                      {
+                        "name": "ApiName",
+                        "value": "Routing API"
+                      }
+                    ],
+                    "evaluationPeriods": 3,
+                    "metricName": "4XXError",
+                    "namespace": "AWS/ApiGateway",
+                    "period": 300,
+                    "statistic": "Average",
+                    "threshold": 0.8
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cloudwatch.CfnAlarm",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_cloudwatch.Alarm",
+              "version": "2.104.0"
+            }
+          },
+          "RoutingAPI-SEV3-Latency": {
+            "id": "RoutingAPI-SEV3-Latency",
+            "path": "RoutingAPIStack/RoutingAPI-SEV3-Latency",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "RoutingAPIStack/RoutingAPI-SEV3-Latency/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CloudWatch::Alarm",
+                  "aws:cdk:cloudformation:props": {
+                    "alarmName": "RoutingAPI-SEV3-Latency",
+                    "comparisonOperator": "GreaterThanOrEqualToThreshold",
+                    "dimensions": [
+                      {
+                        "name": "ApiName",
+                        "value": "Routing API"
+                      }
+                    ],
+                    "evaluationPeriods": 3,
+                    "extendedStatistic": "p90",
+                    "metricName": "Latency",
+                    "namespace": "AWS/ApiGateway",
+                    "period": 300,
+                    "threshold": 5500
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cloudwatch.CfnAlarm",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_cloudwatch.Alarm",
+              "version": "2.104.0"
+            }
+          },
+          "RoutingAPI-SEV3-Simulation": {
+            "id": "RoutingAPI-SEV3-Simulation",
+            "path": "RoutingAPIStack/RoutingAPI-SEV3-Simulation",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "RoutingAPIStack/RoutingAPI-SEV3-Simulation/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CloudWatch::Alarm",
+                  "aws:cdk:cloudformation:props": {
+                    "alarmName": "RoutingAPI-SEV3-Simulation",
+                    "comparisonOperator": "GreaterThanOrEqualToThreshold",
+                    "evaluationPeriods": 3,
+                    "metrics": [
+                      {
+                        "expression": "100*(simulationFailed/simulationRequested)",
+                        "id": "expr_1"
+                      },
+                      {
+                        "metricStat": {
+                          "metric": {
+                            "metricName": "Simulation Requested",
+                            "namespace": "Uniswap",
+                            "dimensions": [
+                              {
+                                "name": "Service",
+                                "value": "RoutingAPI"
+                              }
+                            ]
+                          },
+                          "period": 1800,
+                          "stat": "Sum",
+                          "unit": "Count"
+                        },
+                        "id": "simulationRequested",
+                        "returnData": false
+                      },
+                      {
+                        "metricStat": {
+                          "metric": {
+                            "metricName": "SimulationFailed",
+                            "namespace": "Uniswap",
+                            "dimensions": [
+                              {
+                                "name": "Service",
+                                "value": "RoutingAPI"
+                              }
+                            ]
+                          },
+                          "period": 1800,
+                          "stat": "Sum",
+                          "unit": "Count"
+                        },
+                        "id": "simulationFailed",
+                        "returnData": false
+                      }
+                    ],
+                    "threshold": 75,
+                    "treatMissingData": "notBreaching"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cloudwatch.CfnAlarm",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_cloudwatch.Alarm",
+              "version": "2.104.0"
+            }
+          },
+          "RoutingAPI-SEV3-4XXAlarm-GetQuote": {
+            "id": "RoutingAPI-SEV3-4XXAlarm-GetQuote",
+            "path": "RoutingAPIStack/RoutingAPI-SEV3-4XXAlarm-GetQuote",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "RoutingAPIStack/RoutingAPI-SEV3-4XXAlarm-GetQuote/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CloudWatch::Alarm",
+                  "aws:cdk:cloudformation:props": {
+                    "alarmName": "RoutingAPI-SEV3-4XXAlarm-GetQuote",
+                    "comparisonOperator": "GreaterThanOrEqualToThreshold",
+                    "evaluationPeriods": 2,
+                    "metrics": [
+                      {
+                        "expression": "100*(response400/invocations)",
+                        "id": "expr_1"
+                      },
+                      {
+                        "metricStat": {
+                          "metric": {
+                            "metricName": "GET_QUOTE_REQUESTED",
+                            "namespace": "AWS/ApiGateway",
+                            "dimensions": [
+                              {
+                                "name": "ApiName",
+                                "value": "Routing API"
+                              }
+                            ]
+                          },
+                          "period": 300,
+                          "stat": "Sum"
+                        },
+                        "id": "invocations",
+                        "returnData": false
+                      },
+                      {
+                        "metricStat": {
+                          "metric": {
+                            "metricName": "GET_QUOTE_400",
+                            "namespace": "AWS/ApiGateway",
+                            "dimensions": [
+                              {
+                                "name": "ApiName",
+                                "value": "Routing API"
+                              }
+                            ]
+                          },
+                          "period": 300,
+                          "stat": "Sum"
+                        },
+                        "id": "response400",
+                        "returnData": false
+                      }
+                    ],
+                    "threshold": 80
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cloudwatch.CfnAlarm",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_cloudwatch.Alarm",
+              "version": "2.104.0"
+            }
+          },
+          "RoutingAPI-SEV2-SuccessRate-Alarm": {
+            "id": "RoutingAPI-SEV2-SuccessRate-Alarm",
+            "path": "RoutingAPIStack/RoutingAPI-SEV2-SuccessRate-Alarm",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "RoutingAPIStack/RoutingAPI-SEV2-SuccessRate-Alarm/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CloudWatch::Alarm",
+                  "aws:cdk:cloudformation:props": {
+                    "alarmName": "RoutingAPI-SEV2-SuccessRate-Alarm",
+                    "comparisonOperator": "LessThanOrEqualToThreshold",
+                    "evaluationPeriods": 2,
+                    "metrics": [
+                      {
+                        "expression": "100*(response200/(invocations-response400))",
+                        "id": "expr_1"
+                      },
+                      {
+                        "metricStat": {
+                          "metric": {
+                            "metricName": "GET_QUOTE_REQUESTED",
+                            "namespace": "AWS/ApiGateway",
+                            "dimensions": [
+                              {
+                                "name": "ApiName",
+                                "value": "Routing API"
+                              }
+                            ]
+                          },
+                          "period": 300,
+                          "stat": "Sum"
+                        },
+                        "id": "invocations",
+                        "returnData": false
+                      },
+                      {
+                        "metricStat": {
+                          "metric": {
+                            "metricName": "GET_QUOTE_400",
+                            "namespace": "AWS/ApiGateway",
+                            "dimensions": [
+                              {
+                                "name": "ApiName",
+                                "value": "Routing API"
+                              }
+                            ]
+                          },
+                          "period": 300,
+                          "stat": "Sum"
+                        },
+                        "id": "response400",
+                        "returnData": false
+                      },
+                      {
+                        "metricStat": {
+                          "metric": {
+                            "metricName": "GET_QUOTE_200",
+                            "namespace": "AWS/ApiGateway",
+                            "dimensions": [
+                              {
+                                "name": "ApiName",
+                                "value": "Routing API"
+                              }
+                            ]
+                          },
+                          "period": 300,
+                          "stat": "Sum"
+                        },
+                        "id": "response200",
+                        "returnData": false
+                      }
+                    ],
+                    "threshold": 95
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cloudwatch.CfnAlarm",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_cloudwatch.Alarm",
+              "version": "2.104.0"
+            }
+          },
+          "Url": {
+            "id": "Url",
+            "path": "RoutingAPIStack/Url",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.104.0"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "RoutingAPIStack/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "RoutingAPIStack/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.104.0"
+                }
+              },
+              "Condition": {
+                "id": "Condition",
+                "path": "RoutingAPIStack/CDKMetadata/Condition",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnCondition",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.3.0"
+            }
+          },
+          "BootstrapVersion": {
+            "id": "BootstrapVersion",
+            "path": "RoutingAPIStack/BootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnParameter",
+              "version": "2.104.0"
+            }
+          },
+          "CheckBootstrapVersion": {
+            "id": "CheckBootstrapVersion",
+            "path": "RoutingAPIStack/CheckBootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnRule",
+              "version": "2.104.0"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.104.0"
+        }
+      },
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.3.0"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.104.0"
+    }
+  }
+}

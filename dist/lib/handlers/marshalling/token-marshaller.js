@@ -1,0 +1,20 @@
+import { Token } from "@votopia/sdk-core";
+import { BigNumber } from "ethers";
+export class TokenMarshaller {
+    static marshal(token) {
+        var _a, _b;
+        return {
+            address: token.address,
+            decimals: token.decimals,
+            symbol: token.symbol,
+            name: token.name,
+            buyFeeBps: (_a = token.buyFeeBps) === null || _a === void 0 ? void 0 : _a.toString(),
+            sellFeeBps: (_b = token.sellFeeBps) === null || _b === void 0 ? void 0 : _b.toString(),
+        };
+    }
+    static unmarshal(marshalledToken) {
+        return new Token(marshalledToken.address, marshalledToken.decimals, marshalledToken.symbol || "Unknown", marshalledToken.name || "Unkown", `https://assets.smold.app/api/token/${marshalledToken.address}`, // at this point we know it's valid token address,
+        undefined, marshalledToken.buyFeeBps ? BigNumber.from(marshalledToken.buyFeeBps) : undefined, marshalledToken.sellFeeBps ? BigNumber.from(marshalledToken.sellFeeBps) : undefined);
+    }
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidG9rZW4tbWFyc2hhbGxlci5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL2xpYi9oYW5kbGVycy9tYXJzaGFsbGluZy90b2tlbi1tYXJzaGFsbGVyLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLE9BQU8sRUFBRSxLQUFLLEVBQUUsTUFBTSxtQkFBbUIsQ0FBQztBQUMxQyxPQUFPLEVBQUUsU0FBUyxFQUFFLE1BQU0sUUFBUSxDQUFDO0FBV25DLE1BQU0sT0FBTyxlQUFlO0lBQ25CLE1BQU0sQ0FBQyxPQUFPLENBQUMsS0FBWTs7UUFDaEMsT0FBTztZQUNMLE9BQU8sRUFBRSxLQUFLLENBQUMsT0FBTztZQUN0QixRQUFRLEVBQUUsS0FBSyxDQUFDLFFBQVE7WUFDeEIsTUFBTSxFQUFFLEtBQUssQ0FBQyxNQUFNO1lBQ3BCLElBQUksRUFBRSxLQUFLLENBQUMsSUFBSTtZQUNoQixTQUFTLEVBQUUsTUFBQSxLQUFLLENBQUMsU0FBUywwQ0FBRSxRQUFRLEVBQUU7WUFDdEMsVUFBVSxFQUFFLE1BQUEsS0FBSyxDQUFDLFVBQVUsMENBQUUsUUFBUSxFQUFFO1NBQ3pDLENBQUM7SUFDSixDQUFDO0lBRU0sTUFBTSxDQUFDLFNBQVMsQ0FBQyxlQUFnQztRQUN0RCxPQUFPLElBQUksS0FBSyxDQUNkLGVBQWUsQ0FBQyxPQUFPLEVBQ3ZCLGVBQWUsQ0FBQyxRQUFRLEVBQ3hCLGVBQWUsQ0FBQyxNQUFNLElBQUksU0FBUyxFQUNuQyxlQUFlLENBQUMsSUFBSSxJQUFJLFFBQVEsRUFDaEMsc0NBQXNDLGVBQWUsQ0FBQyxPQUFPLEVBQUUsRUFBRSxrREFBa0Q7UUFDbkgsU0FBUyxFQUNULGVBQWUsQ0FBQyxTQUFTLENBQUMsQ0FBQyxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsZUFBZSxDQUFDLFNBQVMsQ0FBQyxDQUFDLENBQUMsQ0FBQyxTQUFTLEVBQ2pGLGVBQWUsQ0FBQyxVQUFVLENBQUMsQ0FBQyxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsZUFBZSxDQUFDLFVBQVUsQ0FBQyxDQUFDLENBQUMsQ0FBQyxTQUFTLENBQ3BGLENBQUM7SUFDSixDQUFDO0NBQ0YiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBUb2tlbiB9IGZyb20gXCJAdm90b3BpYS9zZGstY29yZVwiO1xuaW1wb3J0IHsgQmlnTnVtYmVyIH0gZnJvbSBcImV0aGVyc1wiO1xuXG5leHBvcnQgaW50ZXJmYWNlIE1hcnNoYWxsZWRUb2tlbiB7XG4gIGFkZHJlc3M6IHN0cmluZztcbiAgZGVjaW1hbHM6IG51bWJlcjtcbiAgc3ltYm9sPzogc3RyaW5nO1xuICBuYW1lPzogc3RyaW5nO1xuICBidXlGZWVCcHM/OiBzdHJpbmc7XG4gIHNlbGxGZWVCcHM/OiBzdHJpbmc7XG59XG5cbmV4cG9ydCBjbGFzcyBUb2tlbk1hcnNoYWxsZXIge1xuICBwdWJsaWMgc3RhdGljIG1hcnNoYWwodG9rZW46IFRva2VuKTogTWFyc2hhbGxlZFRva2VuIHtcbiAgICByZXR1cm4ge1xuICAgICAgYWRkcmVzczogdG9rZW4uYWRkcmVzcyxcbiAgICAgIGRlY2ltYWxzOiB0b2tlbi5kZWNpbWFscyxcbiAgICAgIHN5bWJvbDogdG9rZW4uc3ltYm9sLFxuICAgICAgbmFtZTogdG9rZW4ubmFtZSxcbiAgICAgIGJ1eUZlZUJwczogdG9rZW4uYnV5RmVlQnBzPy50b1N0cmluZygpLFxuICAgICAgc2VsbEZlZUJwczogdG9rZW4uc2VsbEZlZUJwcz8udG9TdHJpbmcoKSxcbiAgICB9O1xuICB9XG5cbiAgcHVibGljIHN0YXRpYyB1bm1hcnNoYWwobWFyc2hhbGxlZFRva2VuOiBNYXJzaGFsbGVkVG9rZW4pOiBUb2tlbiB7XG4gICAgcmV0dXJuIG5ldyBUb2tlbihcbiAgICAgIG1hcnNoYWxsZWRUb2tlbi5hZGRyZXNzLFxuICAgICAgbWFyc2hhbGxlZFRva2VuLmRlY2ltYWxzLFxuICAgICAgbWFyc2hhbGxlZFRva2VuLnN5bWJvbCB8fCBcIlVua25vd25cIixcbiAgICAgIG1hcnNoYWxsZWRUb2tlbi5uYW1lIHx8IFwiVW5rb3duXCIsXG4gICAgICBgaHR0cHM6Ly9hc3NldHMuc21vbGQuYXBwL2FwaS90b2tlbi8ke21hcnNoYWxsZWRUb2tlbi5hZGRyZXNzfWAsIC8vIGF0IHRoaXMgcG9pbnQgd2Uga25vdyBpdCdzIHZhbGlkIHRva2VuIGFkZHJlc3MsXG4gICAgICB1bmRlZmluZWQsXG4gICAgICBtYXJzaGFsbGVkVG9rZW4uYnV5RmVlQnBzID8gQmlnTnVtYmVyLmZyb20obWFyc2hhbGxlZFRva2VuLmJ1eUZlZUJwcykgOiB1bmRlZmluZWQsXG4gICAgICBtYXJzaGFsbGVkVG9rZW4uc2VsbEZlZUJwcyA/IEJpZ051bWJlci5mcm9tKG1hcnNoYWxsZWRUb2tlbi5zZWxsRmVlQnBzKSA6IHVuZGVmaW5lZFxuICAgICk7XG4gIH1cbn1cbiJdfQ==

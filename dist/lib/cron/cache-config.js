@@ -1,0 +1,10 @@
+import { Protocol } from "@votopia/sdk-core";
+import { V3SubgraphProvider } from "@votopia/smart-order-router";
+export const chainProtocols = [
+    {
+        protocol: Protocol.V3,
+        timeout: 90000,
+        provider: new V3SubgraphProvider(3, 90000),
+    },
+];
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY2FjaGUtY29uZmlnLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vbGliL2Nyb24vY2FjaGUtY29uZmlnLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLE9BQU8sRUFBRSxRQUFRLEVBQUUsTUFBTSxtQkFBbUIsQ0FBQztBQUM3QyxPQUFPLEVBQUUsa0JBQWtCLEVBQUUsTUFBTSw2QkFBNkIsQ0FBQztBQUVqRSxNQUFNLENBQUMsTUFBTSxjQUFjLEdBQUc7SUFDNUI7UUFDRSxRQUFRLEVBQUUsUUFBUSxDQUFDLEVBQUU7UUFDckIsT0FBTyxFQUFFLEtBQUs7UUFDZCxRQUFRLEVBQUUsSUFBSSxrQkFBa0IsQ0FBQyxDQUFDLEVBQUUsS0FBSyxDQUFDO0tBQzNDO0NBQ0YsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IFByb3RvY29sIH0gZnJvbSBcIkB2b3RvcGlhL3Nkay1jb3JlXCI7XG5pbXBvcnQgeyBWM1N1YmdyYXBoUHJvdmlkZXIgfSBmcm9tIFwiQHZvdG9waWEvc21hcnQtb3JkZXItcm91dGVyXCI7XG5cbmV4cG9ydCBjb25zdCBjaGFpblByb3RvY29scyA9IFtcbiAge1xuICAgIHByb3RvY29sOiBQcm90b2NvbC5WMyxcbiAgICB0aW1lb3V0OiA5MDAwMCxcbiAgICBwcm92aWRlcjogbmV3IFYzU3ViZ3JhcGhQcm92aWRlcigzLCA5MDAwMCksXG4gIH0sXG5dO1xuIl19
