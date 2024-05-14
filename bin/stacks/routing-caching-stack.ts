@@ -95,7 +95,7 @@ export class RoutingCachingStack extends cdk.NestedStack {
       const { protocol, timeout } = chainProtocols[i];
       const lambda = new aws_lambda_nodejs.NodejsFunction(this, `PoolCacheLambda-Protocol${protocol}`, {
         role: lambdaRole,
-        runtime: aws_lambda.Runtime.NODEJS_14_X,
+        runtime: aws_lambda.Runtime.NODEJS_LATEST,
         entry: path.join(__dirname, "../../lib/cron/cache-pools.ts"),
         handler: "handler",
         timeout: Duration.seconds(900),
@@ -164,7 +164,7 @@ export class RoutingCachingStack extends cdk.NestedStack {
     if (stage == STAGE.BETA || stage == STAGE.PROD) {
       this.ipfsPoolCachingLambda = new aws_lambda_nodejs.NodejsFunction(this, "IpfsPoolCacheLambda", {
         role: lambdaRole,
-        runtime: aws_lambda.Runtime.NODEJS_14_X,
+        runtime: aws_lambda.Runtime.NODEJS_LATEST,
         entry: path.join(__dirname, "../../lib/cron/cache-pools-ipfs.ts"),
         handler: "handler",
         timeout: Duration.seconds(900),
@@ -199,7 +199,7 @@ export class RoutingCachingStack extends cdk.NestedStack {
 
       this.ipfsCleanPoolCachingLambda = new aws_lambda_nodejs.NodejsFunction(this, "CleanIpfsPoolCacheLambda", {
         role: lambdaRole,
-        runtime: aws_lambda.Runtime.NODEJS_14_X,
+        runtime: aws_lambda.Runtime.NODEJS_LATEST,
         entry: path.join(__dirname, "../../lib/cron/clean-pools-ipfs.ts"),
         handler: "handler",
         timeout: Duration.seconds(900),
@@ -250,7 +250,7 @@ export class RoutingCachingStack extends cdk.NestedStack {
 
     const tokenListCachingLambda = new aws_lambda_nodejs.NodejsFunction(this, "TokenListCacheLambda", {
       role: lambdaRole,
-      runtime: aws_lambda.Runtime.NODEJS_14_X,
+      runtime: aws_lambda.Runtime.NODEJS_LATEST,
       entry: path.join(__dirname, "../../lib/cron/cache-token-lists.ts"),
       handler: "handler",
       timeout: Duration.seconds(180),

@@ -85,7 +85,7 @@ export class RoutingLambdaStack extends cdk.NestedStack {
 
     this.routingLambda = new aws_lambda_nodejs.NodejsFunction(this, "RoutingLambda2", {
       role: lambdaRole,
-      runtime: aws_lambda.Runtime.NODEJS_18_X,
+      runtime: aws_lambda.Runtime.NODEJS_LATEST,
       entry: path.join(__dirname, "../../lib/handlers/index.ts"),
       handler: "quoteHandler",
       // 11/8/23: URA currently calls the Routing API with a timeout of 10 seconds.
