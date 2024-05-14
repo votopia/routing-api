@@ -380,7 +380,8 @@
       "TOKEN_PROPERTIES_CACHING_TABLE_NAME": {
        "Ref": "referencetoRoutingAPIStackRoutingDatabaseStackNestedStackRoutingDatabaseStackNestedStackResource3AE7BFDEOutputsRoutingAPIStackRoutingDatabaseStackTokenPropertiesCachingDbC771742DRef"
       },
-      "VERSION": "6"
+      "VERSION": "6",
+      "WEB3_RPC_62049": "https://rpc-testnet.optopia.ai"
      }
     },
     "EphemeralStorage": {
@@ -451,7 +452,7 @@
     "aws:cdk:path": "RoutingAPIStack/RoutingLambdaStack/RoutingLambda2/LogRetention/Resource"
    }
   },
-  "RoutingLambda2CurrentVersion49A1BB94ccdac151411fc20f5785a51bc36b6797": {
+  "RoutingLambda2CurrentVersion49A1BB94b2daa45e8f5c2515752786a39563f96c": {
    "Type": "AWS::Lambda::Version",
    "Properties": {
     "FunctionName": {
@@ -641,7 +642,7 @@
     },
     "FunctionVersion": {
      "Fn::GetAtt": [
-      "RoutingLambda2CurrentVersion49A1BB94ccdac151411fc20f5785a51bc36b6797",
+      "RoutingLambda2CurrentVersion49A1BB94b2daa45e8f5c2515752786a39563f96c",
       "Version"
      ]
     },
