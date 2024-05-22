@@ -50,7 +50,7 @@ import { OnChainTokenFeeFetcher } from "@votopia/smart-order-router/build/main/p
 const DEFAULT_TOKEN_LIST = "https://gateway.ipfs.io/ipns/tokens.uniswap.org";
 
 export enum ChainId {
-  OPTOPIA = 62049,
+  OPTOPIA = 62050,
 }
 
 export const SUPPORTED_CHAINS = [ChainId.OPTOPIA];

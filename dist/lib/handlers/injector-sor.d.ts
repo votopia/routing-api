@@ -2,7 +2,7 @@ import { IGasPriceProvider, IMetric, Simulator, ITokenListProvider, ITokenProvid
 import { ethers } from "ethers";
 import { BaseRInj, Injector } from "./handler";
 export declare enum ChainId {
-    OPTOPIA = 62049
+    OPTOPIA = 62050
 }
 export declare const SUPPORTED_CHAINS: ChainId[];
 export interface RequestInjected<Router> extends BaseRInj {

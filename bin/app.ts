@@ -73,7 +73,7 @@ export class RoutingAPIStage extends Stage {
 const app = new cdk.App();
 
 const jsonRpcProviders = {
-  WEB3_RPC_62049: process.env.JSON_RPC_PROVIDER_62049!,
+  WEB3_RPC_62050: process.env.JSON_RPC_PROVIDER_62050!,
 };
 
 // Local dev stack
