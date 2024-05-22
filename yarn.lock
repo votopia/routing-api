@@ -2232,10 +2232,10 @@
     "@uniswap/v3-core" "^1.0.0"
     base64-sol "1.0.1"
 
-"@votopia/sdk-core@^1.1.6":
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/@votopia/sdk-core/-/sdk-core-1.1.6.tgz#693991fc0238b1e5d1bdbcc66b66fdffddcb7301"
-  integrity sha512-+t99Fej6phS8VkqMgK0RgcAk5PqQwmTSMVT4sqBblHXsaX3NkBOFfcDa0aIyi2goRO9+zi8h8SPQzz2eQpLYRg==
+"@votopia/sdk-core@^1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@votopia/sdk-core/-/sdk-core-1.1.7.tgz#293f6c94b36dece8b7e57f045e43046c6b968c5a"
+  integrity sha512-sCp6zf/rYp1rnXjJb9MvvOmuK2KZ7h0E3b7wFF/hMZF3HrFG1yPqd4tE+D1EWGUaRDoiuE1+Onzs0WaBMpWbRA==
   dependencies:
     "@ethersproject/abi" "^5.7.0"
     "@ethersproject/address" "^5.0.2"
@@ -2246,12 +2246,12 @@
     tiny-invariant "^1.1.0"
     toformat "^2.0.0"
 
-"@votopia/smart-order-router@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@votopia/smart-order-router/-/smart-order-router-1.0.5.tgz#dd0f0cad91c674772e9af7cc25e09bace406644f"
-  integrity sha512-RXG/B9jOKBq4N6a12SxEEWrB+cgEFG2xi6oyrHE0pPXVVrCgEJq0QKPNNaL0sSHNwVlQLQkOyWtNqN+8TBab/g==
+"@votopia/smart-order-router@^1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@votopia/smart-order-router/-/smart-order-router-1.1.7.tgz#26875cba30186beb8d715cb0ba8e4fe5b73c9df1"
+  integrity sha512-3t58gx8Kd48L5ohSHhMfsAPw///TdGh5ZwlW/ZtKn+UjkXHUUJnqPDtkVKJy6FEUfwMlHvurH/Ry2Yy7dlEM0Q==
   dependencies:
-    "@votopia/sdk-core" "^1.1.6"
+    "@votopia/sdk-core" "^1.1.7"
     async-retry "^1.3.1"
     await-timeout "^1.1.1"
     axios "^0.21.1"
